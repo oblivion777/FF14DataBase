@@ -11,15 +11,8 @@ int FileMD5Thread::fileMd5Sum(sql::Statement* state, ThreadsAction action)
     char buffMD5[128] = { 0 };
     char fileName[FILE_NAME_PATH_SIZE] = { 0 };
     char filePath[FILE_NAME_PATH_SIZE] = { 0 };
-    while (TRUE)
+    while (inFile.getline(buff, FILE_NAME_PATH_SIZE))
     {
-        {
-            std::lock_guard<std::mutex> lockguard(*plck);//读取文件
-            if (!inFile.getline(buff, FILE_NAME_PATH_SIZE)) {
-                //delete[] buff;
-                return errors;
-            }
-        }
         try
         {// 捕捉getFileMD5抛出的错误
             strcpy(buffMD5, getFileMD5(buff).c_str());
