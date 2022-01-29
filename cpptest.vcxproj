@@ -108,6 +108,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>D:\FF14DataBase\resource\mysql\debug\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>D:\FF14DataBase\resource\mysql\debug\lib64\debug;D:\FF14DataBase\resource\mysql\debug\lib64\vs14\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -119,6 +120,8 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>D:\FF14DataBase\resource\mysql\release\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>D:\FF14DataBase\resource\mysql\debug\lib64\vs14\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

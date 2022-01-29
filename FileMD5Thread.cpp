@@ -33,7 +33,9 @@ int FileMD5Thread::fileMd5Sum(sql::Statement* state, ThreadsAction action)
             cout << "无法定位文件: " << buff << endl;
         }
         cutStr(buff, filePath, fileName, '\\');
-        if (action == ThreadsAction::TO_MYSQL) 
+        switch (action)
+        {
+        case FileMD5Thread::ThreadsAction::TO_MYSQL:
         {   /*写入数据库*/
             sprintf(buff, "insert into mods_test(md5,filename,path) value(\"%s\",\"%s\",\"%s\")", buffMD5, fileName, filePath);
             gbkToUTF8(buff, FILE_NAME_PATH_SIZE);
@@ -49,18 +51,22 @@ int FileMD5Thread::fileMd5Sum(sql::Statement* state, ThreadsAction action)
                 outLog << buff << endl;
             }
         }
-        else if (action == ThreadsAction::TO_FILE)
+        break;
+        case FileMD5Thread::ThreadsAction::TO_FILE:
         {   /*写入文件*/
             std::lock_guard<std::mutex> lockguard(*plck);
             //outFile << buff << endl << "[MD5]" << buffMD5 << endl;//写入文件
             outLog << fileName << " " << filePath << endl;
             outLog << buff << endl << endl;
         }
-        else
+        break;
+        default:
         {
             cout << "别乱搞!" << endl;
             return 404;
         }
+        break;
+        }//switch end
         this->endResetZero(buff, FILE_NAME_PATH_SIZE);
         this->endResetZero(fileName, FILE_NAME_PATH_SIZE);
         this->endResetZero(filePath, FILE_NAME_PATH_SIZE);
