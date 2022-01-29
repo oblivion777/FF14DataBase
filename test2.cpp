@@ -46,7 +46,7 @@ sql::Connection* connect() {
     std::string password;
     char loginInfoBuff[loginInfoLen] = { 0 };
 
-    loginInfo.open("_log/login_info.txt");
+    loginInfo.open("_log/login_info.txt",ios::in);
     while (loginInfo.getline(loginInfoBuff, loginInfoLen))
     { 
         if ((strstr(loginInfoBuff, "url:\t"))) {

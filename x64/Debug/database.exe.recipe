@@ -2,7 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>D:\FF14DataBase\x64\Debug\md5lib.exe</FullPath>
+      <FullPath>D:\FF14DataBase\x64\Debug\database.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />

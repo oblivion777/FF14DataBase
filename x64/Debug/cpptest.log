@@ -1,0 +1,9 @@
+﻿  strConvertor.cpp
+  FileMD5Thread.cpp
+  listFiles.cpp
+  test1.cpp
+  test2.cpp
+  正在生成代码...
+MD5_Debug.lib(md5file.obj) : warning LNK4099: 未找到 PDB“MD5_Debug.pdb”(使用“MD5_Debug.lib(md5file.obj)”或在“D:\FF14DataBase\x64\Debug\MD5_Debug.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+MD5_Debug.lib(md5.obj) : warning LNK4099: 未找到 PDB“MD5_Debug.pdb”(使用“MD5_Debug.lib(md5.obj)”或在“D:\FF14DataBase\x64\Debug\MD5_Debug.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+  cpptest.vcxproj -> D:\FF14DataBase\x64\Debug\database.exe
