@@ -1,10 +1,11 @@
-﻿#include <mutex>
+﻿#pragma once
+#include <mutex>
 #include "md5.h"
 #include "ffdatabase.h"
 //#pragma execution_character_set("utf-8")
 
 
-#pragma once
+
 #ifndef FILEMD5THREAD_H
 #define FILEMD5THREAD_H
 using namespace std;

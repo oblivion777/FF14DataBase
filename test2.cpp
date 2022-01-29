@@ -16,7 +16,6 @@ using namespace std;
 void fileList1();
 sql::Connection* connect();
 
-locale loc("chs");//windows下ok
 int main(int argc,char *argv[]) {
     //fileList1();
     //listFilesCurrent("E:\\Games\\MOD\\*.*");

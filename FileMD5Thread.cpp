@@ -1,20 +1,22 @@
 ﻿#pragma once
 #include "FileMD5Thread.h"
 
-#define FILE_NAME_PATH_SIZE 512
+
 
 int FileMD5Thread::fileMd5Sum(sql::Statement* state, ThreadsAction action)
 {
-    char* buff = new char[FILE_NAME_PATH_SIZE*2];
+    constexpr int FILE_NAME_PATH_SIZE = 512;
+    //char* buff = new char[FILE_NAME_PATH_SIZE*2];
+    char buff[FILE_NAME_PATH_SIZE * 2] = { 0 };
     char buffMD5[128] = { 0 };
     char fileName[FILE_NAME_PATH_SIZE] = { 0 };
     char filePath[FILE_NAME_PATH_SIZE] = { 0 };
-
     while (TRUE)
     {
         {
             std::lock_guard<std::mutex> lockguard(*plck);//读取文件
             if (!inFile.getline(buff, FILE_NAME_PATH_SIZE)) {
+                //delete[] buff;
                 return errors;
             }
         }
@@ -63,7 +65,7 @@ int FileMD5Thread::fileMd5Sum(sql::Statement* state, ThreadsAction action)
         this->endResetZero(fileName, FILE_NAME_PATH_SIZE);
         this->endResetZero(filePath, FILE_NAME_PATH_SIZE);
     }
-    delete[] buff;
+    //delete[] buff;
     return errors;
 }
 
@@ -159,7 +161,7 @@ void FileMD5Thread::closeIoFile()
     this->outLog.close();
 }
 
-#undef FILE_NAME_PATH_SIZE
+
 
 /*初始化*/
 int FileMD5Thread::errors = 0;

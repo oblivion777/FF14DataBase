@@ -1,4 +1,5 @@
-﻿#include <iostream>
+﻿#pragma once
+#include <iostream>
 #include <string.h>
 #include <icu.h>
 
@@ -28,7 +29,6 @@ bool cutStr(char* full, char* front, char* back, char flag) {
     return true;
 }
 #endif
-#pragma once
 
 #ifndef DEFAULT_TO_TF8_
 #define DEFAULT_TO_TF8_
