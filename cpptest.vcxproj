@@ -42,6 +42,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -129,11 +130,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="listFiles.cpp" />
     <ClCompile Include="strConvertor.cpp" />
     <ClCompile Include="FileMD5Thread.cpp" />
-    <ClCompile Include="listFiles.cpp" />
     <ClCompile Include="test1.cpp" />
-    <ClCompile Include="test2.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileMD5Thread.h" />

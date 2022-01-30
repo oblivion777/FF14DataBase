@@ -80,6 +80,7 @@ been defined with C compiler flags.
 #include <string>
 
 std::string getFileMD5(const std::string& filename);
+std::string getFileMD5W(const wchar_t*);
 
 #endif
 #pragma once

@@ -13,7 +13,7 @@
 
 
 using namespace std;
-void fileList1();
+//void fileList1();
 sql::Connection* connect();
 
 int main(int argc,char *argv[]) {
@@ -23,6 +23,9 @@ int main(int argc,char *argv[]) {
     sql::Connection* conn = connect();
     sqlTest.run(conn);
     //sqlTest.run();
+
+
+
     conn->close();
     //wprintf(L"Kräuter Body 2.0");
     //listFilesCurrentW(L"E:/Games/MOD/[Gear NSFW]/[Bizu]/*");
@@ -73,18 +76,3 @@ sql::Connection* connect() {
     return con;
 }
 
-void fileList1() {
-    //char dir[] = "D:\\Games\\MODconfig";
-    //char dir[] = "E:\\Games\\Final Fantasy XIV\\最终幻想XIV\\game\\sqpack\\ffxiv";
-    char dir[] = "F:\\[FFXIV]MODS\\MOD";
-
-    ofstream outFile;
-    outFile.open(MODS_LIST_FILE, ios::out);
-    if (!(outFile.is_open())) {
-        cout << "打开文件失败!" << endl;
-        return;
-    }
-    listFiles(dir, outFile);
-    outFile.close();
-    return;
-}

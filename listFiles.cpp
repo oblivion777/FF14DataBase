@@ -166,3 +166,20 @@ void listFilesCurrentW(wchar_t* dir)
     } while (FindNextFileW(hFind, findData));
     cout << "\nDone!\n";
 }
+
+
+void fileList1() {
+    //char dir[] = "D:\\Games\\MODconfig";
+    //char dir[] = "E:\\Games\\Final Fantasy XIV\\最终幻想XIV\\game\\sqpack\\ffxiv";
+    char dir[] = "F:\\[FFXIV]MODS\\MOD";
+
+    ofstream outFile;
+    outFile.open(MODS_LIST_FILE, ios::out);
+    if (!(outFile.is_open())) {
+        cout << "打开文件失败!" << endl;
+        return;
+    }
+    listFiles(dir, outFile);
+    outFile.close();
+    return;
+}

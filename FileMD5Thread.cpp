@@ -2,15 +2,15 @@
 #include "FileMD5Thread.h"
 
 
-
+typedef char MYSQL_CHAR;
 int FileMD5Thread::fileMd5Sum(sql::Statement* state, ThreadsAction action)
 {
     constexpr int FILE_NAME_PATH_SIZE = 512;
     //char* buff = new char[FILE_NAME_PATH_SIZE*2];
-    char buff[FILE_NAME_PATH_SIZE * 2] = { 0 };
-    char buffMD5[128] = { 0 };
-    char fileName[FILE_NAME_PATH_SIZE] = { 0 };
-    char filePath[FILE_NAME_PATH_SIZE] = { 0 };
+    MYSQL_CHAR buff[FILE_NAME_PATH_SIZE * 2] = { 0 };
+    MYSQL_CHAR buffMD5[128] = { 0 };
+    MYSQL_CHAR fileName[FILE_NAME_PATH_SIZE] = { 0 };
+    MYSQL_CHAR filePath[FILE_NAME_PATH_SIZE] = { 0 };
     while (inFile.getline(buff, FILE_NAME_PATH_SIZE))
     {
         try
@@ -31,7 +31,7 @@ int FileMD5Thread::fileMd5Sum(sql::Statement* state, ThreadsAction action)
         case FileMD5Thread::ThreadsAction::TO_MYSQL:
         {   /*写入数据库*/
             sprintf(buff, "insert into mods_test(md5,filename,path) value(\"%s\",\"%s\",\"%s\")", buffMD5, fileName, filePath);
-            gbkToUTF8(buff, FILE_NAME_PATH_SIZE);
+            //gbkToUTF8(buff, FILE_NAME_PATH_SIZE);
             try
             {
                 std::lock_guard<std::mutex> lockguard(*plck);
