@@ -2,8 +2,8 @@
 #include <mutex>
 #include "md5.h"
 #include "ffdatabase.h"
+//#include "mysql/jdbc.h"
 //#pragma execution_character_set("utf-8")
-
 
 
 #ifndef FILEMD5THREAD_H
@@ -17,6 +17,8 @@ private:
     static int errors;
     ifstream inFile;
     ofstream outLog;
+    //wifstream wInFile;
+    //wofstream wOutLog;
     static std::mutex logLock;//日志锁
     std::mutex* plck;//默认所有对象使用相同的锁
 public:  
@@ -30,9 +32,11 @@ public:
     FileMD5Thread(char* in = MODS_LIST_FILE, char* out = OPERATE_MYSQL_LOG_FILE);
     //int md5ToFile(void);//MD5输出到文件
     
-    int run();//多线程计算MD5
+    int run();
+    //多线程计算MD5
     int run(sql::Connection*);//传入Connection对象写入MySQL数据库
     static void endResetZero(char*, int);
+    static void endResetZero(wchar_t*, int);
     void openIoFile();
     void closeIoFile();
 

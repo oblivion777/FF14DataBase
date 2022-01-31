@@ -42,7 +42,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>NotSet</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -131,9 +131,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="listFiles.cpp" />
-    <ClCompile Include="strConvertor.cpp" />
+    <ClCompile Include="StrConvertor.h" />
     <ClCompile Include="FileMD5Thread.cpp" />
-    <ClCompile Include="test1.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -15,20 +15,17 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="test1.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FileMD5Thread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="strConvertor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="listFiles.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StrConvertor.h">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

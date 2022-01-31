@@ -3,7 +3,7 @@
 #include "md5.h"
 
 
-
+#ifndef LISTFILES_IN_FFDATABASE_H_
 using namespace std;
 mutex mLock;
 void writeToFile(const char* s1, ofstream& outFile) {
@@ -183,3 +183,5 @@ void fileList1() {
     outFile.close();
     return;
 }
+
+#endif

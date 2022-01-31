@@ -1,6 +1,5 @@
-﻿#pragma once
-#include "FileMD5Thread.h"
-
+﻿#include "FileMD5Thread.h"
+//#pragma once
 
 typedef char MYSQL_CHAR;
 int FileMD5Thread::fileMd5Sum(sql::Statement* state, ThreadsAction action)
@@ -8,30 +7,36 @@ int FileMD5Thread::fileMd5Sum(sql::Statement* state, ThreadsAction action)
     constexpr int FILE_NAME_PATH_SIZE = 512;
     //char* buff = new char[FILE_NAME_PATH_SIZE*2];
     MYSQL_CHAR buff[FILE_NAME_PATH_SIZE * 2] = { 0 };
+    wstring wstrFullFilePath;
     MYSQL_CHAR buffMD5[128] = { 0 };
     MYSQL_CHAR fileName[FILE_NAME_PATH_SIZE] = { 0 };
     MYSQL_CHAR filePath[FILE_NAME_PATH_SIZE] = { 0 };
     while (inFile.getline(buff, FILE_NAME_PATH_SIZE))
     {
+        //wcstombs(buff,wstrFullFilePath, FILE_NAME_PATH_SIZE*2);
+
         try
         {// 捕捉getFileMD5抛出的错误
-            strcpy(buffMD5, getFileMD5(buff).c_str());
+            wstrFullFilePath = StrConvertor::UTF8ToUnicode(buff);
+            strcpy(buffMD5, getFileMD5W(wstrFullFilePath.c_str()).c_str());
         }
         catch (...)
         {
             this->endResetZero(buffMD5, 128);
             std::lock_guard<std::mutex> lockguard(logLock);
             errors++;
-            outLog << "无法定位文件: " << buff << endl;
+            outLog << "无法定位文件: " << buff << "\n";
             cout << "无法定位文件: " << buff << endl;
+            continue;
         }
-        cutStr(buff, filePath, fileName, '\\');
+        StrConvertor::cutStr(buff, filePath, fileName, '\\');
         switch (action)
         {
         case FileMD5Thread::ThreadsAction::TO_MYSQL:
         {   /*写入数据库*/
-            sprintf(buff, "insert into mods_test(md5,filename,path) value(\"%s\",\"%s\",\"%s\")", buffMD5, fileName, filePath);
-            //gbkToUTF8(buff, FILE_NAME_PATH_SIZE);
+            sprintf(buff, "insert into mods_test(md5,filename,path) value(\"%s\",\"%s\",\"%s\")"    \
+                ,buffMD5, fileName, filePath);
+            //StrConvertor::gbkToUTF8(buff, FILE_NAME_PATH_SIZE);
             try
             {
                 std::lock_guard<std::mutex> lockguard(*plck);
@@ -41,7 +46,7 @@ int FileMD5Thread::fileMd5Sum(sql::Statement* state, ThreadsAction action)
             {
                 std::lock_guard<std::mutex> lockguard(logLock);
                 errors++;
-                outLog << buff << endl;
+                outLog << "SQL syntax error: " << buff << endl;
             }
         }
         break;
@@ -67,6 +72,9 @@ int FileMD5Thread::fileMd5Sum(sql::Statement* state, ThreadsAction action)
     //delete[] buff;
     return errors;
 }
+
+
+
 
 int FileMD5Thread::run(sql::Connection* conn)
 {
@@ -132,17 +140,20 @@ void FileMD5Thread::endResetZero(char* str,int strSize)
     for (int i = 0; i < strSize; i++) {
         str[i] = '\0';
     }
-    /*
-    for (int i = strSize - 1; i > strlen(str) - 1; i--) {
-        str[i] = '\0';
+}
+
+void FileMD5Thread::endResetZero(wchar_t* str, int strSize)
+{
+    for (int i = 0; i < strSize; i++) {
+        str[i] = L'\0';
     }
-    */
 }
 
 void FileMD5Thread::openIoFile()
 {
     this->inFile.open(listFile, ios::in);
-    if (!(inFile.is_open())) {
+    //this->wInFile.open(listFile, ios::in);
+    if (!(inFile.is_open()/*&& wInFile.is_open()*/)) {
         cout << "读取文件失败!" << endl;
         throw "File does not exist!";
     }
@@ -158,9 +169,8 @@ void FileMD5Thread::closeIoFile()
 {
     this->inFile.close();
     this->outLog.close();
+    //this->wInFile.close();
 }
-
-
 
 /*初始化*/
 int FileMD5Thread::errors = 0;

@@ -1,4 +1,5 @@
-﻿import os
+﻿
+import os
 
 outFileList=open("D:/FF14DataBase/_log/fileList-utf8.txt","wb+")
 path="F:\\[FFXIV]MODS\\MOD"

@@ -1,16 +1,5 @@
-﻿#include <iostream>
-#include <windows.h>
-#include <string>
-#include <time.h>
-#include <fstream>
-#include <mutex>
-
-#include "FileMD5Thread.h"
-#include "ffdatabase.h"
-
-#include <icu.h>
-
-
+﻿#include "ffdatabase.h"
+#include "mysql/jdbc.h"
 
 using namespace std;
 //void fileList1();
@@ -24,7 +13,7 @@ int main(int argc,char *argv[]) {
     sqlTest.run(conn);
     //sqlTest.run();
 
-
+    //conn->createStatement()->executeUpdate("insert into mods_test(filename) value('安东风安赛飞东方安赛飞')");
 
     conn->close();
     //wprintf(L"Kräuter Body 2.0");
@@ -75,4 +64,6 @@ sql::Connection* connect() {
     cout << "connect suceess!" << endl;
     return con;
 }
+
+
 
