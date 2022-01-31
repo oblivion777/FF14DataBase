@@ -1,9 +1,10 @@
 ﻿#include "FileMD5Thread.h"
 //#pragma once
 
-typedef char MYSQL_CHAR;
+
 int FileMD5Thread::fileMd5Sum(sql::Statement* state, ThreadsAction action)
 {
+    typedef char MYSQL_CHAR;
     constexpr int FILE_NAME_PATH_SIZE = 512;
     //char* buff = new char[FILE_NAME_PATH_SIZE*2];
     MYSQL_CHAR buff[FILE_NAME_PATH_SIZE * 2] = { 0 };
@@ -99,7 +100,7 @@ int FileMD5Thread::run(sql::Connection* conn)
     }
     //计时结束
     clock_t end_time = clock();
-    outLog << "elapsed time:" << (double)clock() / CLK_TCK << "s\n"
+    outLog << "elapsed time: " << (double)clock() / CLK_TCK << "s\n"
         << "error count: " << errors;
     //收尾
     state->close();

@@ -13,7 +13,7 @@ class FileMD5Thread {
 private:
     char* listFile;
     char* outMD5File;
-    unsigned short int threadCount = 24;//线程数 
+    unsigned short int threadCount = 14;//线程数 
     static int errors;
     ifstream inFile;
     ofstream outLog;

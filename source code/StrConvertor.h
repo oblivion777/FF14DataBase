@@ -3,6 +3,7 @@
 #include <string.h>
 #include <icu.h>
 #include <codecvt>
+
 #ifndef STR_CONVERTOR_H
 #define STR_CONVERTOR_H
 class StrConvertor {
