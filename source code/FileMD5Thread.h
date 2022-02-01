@@ -22,9 +22,9 @@ private:
     //wifstream wInFile;
     //wofstream wOutLog;
     static std::mutex logLock;//日志锁
-    std::mutex* plck;//默认所有对象使用相同的锁
-    char* FileMD5Thread::modsExtensionName[2] = { "ttmp","ttmp2" };
-    char* FileMD5Thread::picsExtensionName[3] = { "jpg","png","gif" };
+    std::mutex* sqlLock;//默认所有对象使用相同的锁
+    char* FileMD5Thread::modsExtensionName[2] = { "ttmp2","ttmp"};
+    char* FileMD5Thread::picsExtensionName[6] = { "jpg","png","gif","bmp","PNG","webp"};
 public:  
     enum class FileType//文件类型
     {
@@ -55,7 +55,7 @@ public:
     }
     int setLock(std::mutex* lock) {
         /*设定锁*/
-        plck = lock;
+        sqlLock = lock;
         return 0;
     }
     static int getErrors() {

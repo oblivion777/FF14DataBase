@@ -40,42 +40,38 @@ int FileMD5Thread::fileMd5Sum(sql::Statement* state)
         pathWithFileMD5.assign(md5::digestString(pathWithFileMD5.c_str())); 
         
         /*写入数据库*/
-        switch (fileType)
+        try
         {
-        case FileMD5Thread::FileType::MOD:
-            try
+            std::lock_guard<std::mutex> lockguard(*sqlLock);
+            switch (fileType)
             {
-                std::lock_guard<std::mutex> lockguard(*plck);
+            case FileMD5Thread::FileType::MOD: {
                 sprintf(buff, "insert into mods(id,filename,path,md5,path_with_file_md5) value(\"%s\",\"%s\",\"%s\",\"%s\",\"%s\")"\
                     , timeTag(ltm).c_str(), fileName, filePath, buffMD5, pathWithFileMD5.c_str());
                 state->executeUpdate(buff);
+                break;
             }
-            catch (...)
-            {
-                std::lock_guard<std::mutex> lockguard(logLock);
-                errors++;
-                outLog << "SQL syntax error: " << buff << endl;
-            }
-            break;
-        case FileMD5Thread::FileType::PICTURE:
-            try
-            {
-                std::lock_guard<std::mutex> lockguard(*plck);
+            case FileMD5Thread::FileType::PICTURE: {
                 sprintf(buff, "insert into preview_pics(id,filename,path,pic_md5) value(\"%s\",\"%s\",\"%s\",\"%s\")"\
                     , timeTag(ltm).c_str(), fileName, filePath, buffMD5);
                 state->executeUpdate(buff);
+                break;
             }
-            catch (...)
-            {
-                std::lock_guard<std::mutex> lockguard(logLock);
-                errors++;
-                outLog << "SQL syntax error: " << buff << endl;
+            case FileMD5Thread::FileType::OTHER: {
+                sprintf(buff, "insert into other(id,filename,path,md5) value(\"%s\",\"%s\",\"%s\",\"%s\")"\
+                    , timeTag(ltm).c_str(), fileName, filePath, buffMD5);
+                state->executeUpdate(buff);
+                break;
             }
-            break;
-        case FileMD5Thread::FileType::OTHER:
-            break;
-        default:
-            break;
+            default:
+                break;
+            }
+        }
+        catch (...)
+        {
+            std::lock_guard<std::mutex> lockguard(logLock);
+            errors++;
+            outLog << "SQL syntax error: " << buff << endl;
         }
 
         this->endResetZero(buff, FILE_NAME_PATH_SIZE * 2);
@@ -99,7 +95,7 @@ int FileMD5Thread::run(sql::Connection* conn)
 
     openIoFile();
     std::mutex lckSQL;//SQL写入锁
-    this->plck = &lckSQL;
+    this->sqlLock = &lckSQL;
     sql::Statement* state = conn->createStatement();
     thread* pth = new thread[threadCount];
     if (pth == NULL) {
@@ -129,7 +125,7 @@ int FileMD5Thread::run() {
         //打开保存文件列表的文件
     openIoFile();
     sql::Statement* state = NULL;
-    plck = &(this->logLock);
+    sqlLock = &(this->logLock);
     thread* pth = new thread[threadCount];
     if (pth == NULL) {
         return -404;
@@ -215,7 +211,7 @@ FileMD5Thread::FileMD5Thread( char* listFile,  char* outMD5File)
 {
     this->listFile = listFile;
     this->outMD5File = outMD5File;
-    plck = &(this->logLock);
+    sqlLock = &(this->logLock);
 }
 
 FileMD5Thread::FileType FileMD5Thread::bpFileType(char* fileName)
@@ -250,5 +246,6 @@ FileMD5Thread::FileType FileMD5Thread::bpFileType(char* fileName, FileType* file
             return FileType::PICTURE;
         }
     }
-    return FileType::UNKONW;
+    *fileType = FileType::OTHER;
+    return FileType::OTHER;
 }
