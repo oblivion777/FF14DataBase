@@ -6,18 +6,14 @@ using namespace std;
 sql::Connection* connect();
 
 int main(int argc,char *argv[]) {
-    //fileList1();
-    //listFilesCurrent("E:\\Games\\MOD\\*.*");
+    system("D:/FF14DataBase/PythonProgram/Python-listFile.py");
     FileMD5Thread sqlTest = FileMD5Thread();
     sql::Connection* conn = connect();
     sqlTest.run(conn);
     //sqlTest.run();
 
-    //conn->createStatement()->executeUpdate("insert into mods_test(filename) value('安东风安赛飞东方安赛飞')");
 
     conn->close();
-    //wprintf(L"Kräuter Body 2.0");
-    //listFilesCurrentW(L"E:/Games/MOD/[Gear NSFW]/[Bizu]/*");
 
 #ifdef _DEBUG
     system("pause");

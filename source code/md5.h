@@ -1,4 +1,7 @@
-﻿/* MD5.H - header file for MD5C.C
+﻿#include <cstring>
+#include <iostream>
+#include <string>
+/* MD5.H - header file for MD5C.C
 */
 
 /* Copyright (C) 1991-2, RSA Data Security, Inc. Created 1991. All
@@ -77,10 +80,48 @@ been defined with C compiler flags.
 #ifndef MD5FILE_H
 #define MD5FILE_H
 
-#include <string>
 
 std::string getFileMD5(const std::string& filename);
 std::string getFileMD5W(const wchar_t*);
 
 #endif
 #pragma once
+
+/**********************************************************************/
+#ifdef _DEBUG //设置lib文件的路径
+#pragma comment(lib,".\\resource\\md5\\MD5DigestString_Debug.lib")
+#else
+#pragma comment(lib,".\\resource\\md5\\MD5DigestString_Release.lib")
+#endif
+
+#ifndef COMMON_SOURCE_MD5_H
+#define COMMON_SOURCE_MD5_H
+
+
+
+namespace md5 {
+
+	// a small class for calculating MD5 hashes of strings or byte arrays
+	// it is not meant to be fast or secure
+	//
+	// usage: 1) feed it blocks of uchars with update()
+	//      2) finalize()
+	//      3) get hexdigest() string
+	//      or
+	//      MD5(std::string).hexdigest()
+	//
+	// assumes that char is 8 bit and int is 32 bit
+
+	std::string digestString(const std::string& input);
+	/**
+	 * 生成指定数据的MD5并转为HEX字符串返回,为null时返回空对象
+	 */
+	std::string digestString(const void* input, unsigned int length);
+	std::string digest(const std::string& input);
+	/**
+	 * 生成指定数据的MD5,为null时返回空对象
+	 */
+	std::string digest(const void* input, unsigned int length);
+
+} /* namespace md5 */
+#endif /* COMMON_SOURCE_MD5_H */

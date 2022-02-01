@@ -15,6 +15,8 @@ private:
     char* outMD5File;
     unsigned short int threadCount = 14;//线程数 
     static int errors;
+    static time_t now;
+    static unsigned int timeCount;//时间戳计数
     ifstream inFile;
     ofstream outLog;
     //wifstream wInFile;
@@ -28,6 +30,7 @@ public:
     };
 private:
     int fileMd5Sum(sql::Statement*, ThreadsAction);
+    std::string timeTag(tm*);
 public:
     FileMD5Thread(char* in = MODS_LIST_FILE, char* out = OPERATE_MYSQL_LOG_FILE);
     //int md5ToFile(void);//MD5输出到文件

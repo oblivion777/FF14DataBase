@@ -79,3 +79,9 @@ std::string getFileMD5W(const wchar_t*);
 
 #endif
 #pragma once
+
+
+
+
+
+
