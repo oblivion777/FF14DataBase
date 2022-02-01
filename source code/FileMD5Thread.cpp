@@ -2,10 +2,10 @@
 //#pragma once
 
 
-int FileMD5Thread::fileMd5Sum(sql::Statement* state, ThreadsAction action)
+int FileMD5Thread::fileMd5Sum(sql::Statement* state)
 {
     typedef char MYSQL_CHAR;
-    constexpr int FILE_NAME_PATH_SIZE = 512;
+    constexpr int FILE_NAME_PATH_SIZE = 256;
     //char* buff = new char[FILE_NAME_PATH_SIZE*2];
     MYSQL_CHAR buff[FILE_NAME_PATH_SIZE * 2] = { 0 };
     wstring wstrFullFilePath;
@@ -14,12 +14,13 @@ int FileMD5Thread::fileMd5Sum(sql::Statement* state, ThreadsAction action)
     MYSQL_CHAR fileName[FILE_NAME_PATH_SIZE] = { 0 };
     MYSQL_CHAR filePath[FILE_NAME_PATH_SIZE] = { 0 };
     tm* ltm = new tm;
+    FileType fileType = FileType::UNKONW;
     while (inFile.getline(buff, FILE_NAME_PATH_SIZE))
     {
         //wcstombs(buff,wstrFullFilePath, FILE_NAME_PATH_SIZE*2);
         try
-        {// 捕捉getFileMD5抛出的错误
-            wstrFullFilePath = StrConvertor::UTF8ToUnicode(buff);
+        {// 获取文件MD5
+            wstrFullFilePath = StrConvertor::utf8ToUnicode(buff);
             strcpy(buffMD5, getFileMD5W(wstrFullFilePath.c_str()).c_str());
         }
         catch (...)
@@ -31,20 +32,22 @@ int FileMD5Thread::fileMd5Sum(sql::Statement* state, ThreadsAction action)
             cout << "无法定位文件: " << buff << endl;
             continue;
         }
-        StrConvertor::cutStr(buff, filePath, fileName, '\\');
 
+        StrConvertor::cutStr(buff, filePath, fileName, '\\');
+        
+        bpFileType(fileName,&fileType);//判断文件类型
         pathWithFileMD5.assign(filePath).append(buffMD5);
-        pathWithFileMD5.assign(md5::digestString(pathWithFileMD5.c_str()));
-        switch (action)
+        pathWithFileMD5.assign(md5::digestString(pathWithFileMD5.c_str())); 
+        
+        /*写入数据库*/
+        switch (fileType)
         {
-        case FileMD5Thread::ThreadsAction::TO_MYSQL:
-        {   /*写入数据库*/
-            //StrConvertor::gbkToUTF8(buff, FILE_NAME_PATH_SIZE);
+        case FileMD5Thread::FileType::MOD:
             try
             {
                 std::lock_guard<std::mutex> lockguard(*plck);
-                sprintf(buff, "insert into mods_test(id,md5,filename,path,path_with_file_md5) value(\"%s\",\"%s\",\"%s\",\"%s\",\"%s\")"    \
-                    , timeTag(ltm).c_str(), buffMD5, fileName, filePath, pathWithFileMD5.c_str());
+                sprintf(buff, "insert into mods(id,filename,path,md5,path_with_file_md5) value(\"%s\",\"%s\",\"%s\",\"%s\",\"%s\")"\
+                    , timeTag(ltm).c_str(), fileName, filePath, buffMD5, pathWithFileMD5.c_str());
                 state->executeUpdate(buff);
             }
             catch (...)
@@ -53,27 +56,32 @@ int FileMD5Thread::fileMd5Sum(sql::Statement* state, ThreadsAction action)
                 errors++;
                 outLog << "SQL syntax error: " << buff << endl;
             }
-        }
-        break;
-        case FileMD5Thread::ThreadsAction::TO_FILE:
-        {   /*写入文件*/
-            std::lock_guard<std::mutex> lockguard(*plck);
-            //outFile << buff << endl << "[MD5]" << buffMD5 << endl;//写入文件
-            outLog << fileName << " " << filePath << endl;
-            outLog << buff << endl << endl;
-        }
-        break;
+            break;
+        case FileMD5Thread::FileType::PICTURE:
+            try
+            {
+                std::lock_guard<std::mutex> lockguard(*plck);
+                sprintf(buff, "insert into preview_pics(id,filename,path,pic_md5) value(\"%s\",\"%s\",\"%s\",\"%s\")"\
+                    , timeTag(ltm).c_str(), fileName, filePath, buffMD5);
+                state->executeUpdate(buff);
+            }
+            catch (...)
+            {
+                std::lock_guard<std::mutex> lockguard(logLock);
+                errors++;
+                outLog << "SQL syntax error: " << buff << endl;
+            }
+            break;
+        case FileMD5Thread::FileType::OTHER:
+            break;
         default:
-        {
-            cout << "别乱搞!" << endl;
-            delete ltm;
-            return -404;
+            break;
         }
-        break;
-        }//switch end
-        this->endResetZero(buff, FILE_NAME_PATH_SIZE);
+
+        this->endResetZero(buff, FILE_NAME_PATH_SIZE * 2);
         this->endResetZero(fileName, FILE_NAME_PATH_SIZE);
         this->endResetZero(filePath, FILE_NAME_PATH_SIZE);
+        fileType = FileType::UNKONW;
     }
     //delete[] buff;
     delete ltm;
@@ -99,7 +107,7 @@ int FileMD5Thread::run(sql::Connection* conn)
     }
     int i;
     for (i = 0; i < threadCount; i++) {
-        pth[i] = thread(&FileMD5Thread::fileMd5Sum, this, state, ThreadsAction::TO_MYSQL);
+        pth[i] = thread(&FileMD5Thread::fileMd5Sum, this, state);
     }
     for (i = 0; i < threadCount; i++) {
         pth[i].join();
@@ -128,7 +136,7 @@ int FileMD5Thread::run() {
     }
     int i;
     for (i = 0; i < threadCount; i++) {
-        pth[i] = thread(&FileMD5Thread::fileMd5Sum, this, state, ThreadsAction::TO_FILE);//危险行为!!!!!!
+        pth[i] = thread(&FileMD5Thread::fileMd5Sum, this, state);//危险行为!!!!!!
     }
     for (i = 0; i < threadCount; i++) {
         pth[i].join();
@@ -201,9 +209,46 @@ unsigned int FileMD5Thread::timeCount = 0;
 time_t FileMD5Thread::now = 0;
 std::mutex FileMD5Thread::logLock;
 
+
+
 FileMD5Thread::FileMD5Thread( char* listFile,  char* outMD5File)
 {
     this->listFile = listFile;
     this->outMD5File = outMD5File;
     plck = &(this->logLock);
+}
+
+FileMD5Thread::FileType FileMD5Thread::bpFileType(char* fileName)
+{
+    FileMD5Thread::FileType fileType=FileType::UNKONW;
+    for (int i = 0; i < sizeof(this->modsExtensionName) / sizeof(char*); i++) {
+        if (!(strcmp(modsExtensionName[i], StrConvertor::getExtensionName(fileName)))) {
+            fileType = FileType::MOD;
+            break;
+        }
+    }
+    for (int i = 0; i < sizeof(this->picsExtensionName) / sizeof(char*); i++) {
+        if (!(strcmp(picsExtensionName[i], StrConvertor::getExtensionName(fileName)))) {
+            fileType = FileType::PICTURE;
+            break;
+        }
+    }
+    return fileType;
+}
+
+FileMD5Thread::FileType FileMD5Thread::bpFileType(char* fileName, FileType* fileType)
+{
+    for (int i = 0; i < sizeof(this->modsExtensionName) / sizeof(char*); i++) {
+        if (!(strcmp(modsExtensionName[i], StrConvertor::getExtensionName(fileName)))) {
+            *fileType = FileType::MOD;
+            return FileType::MOD;
+        }
+    }
+    for (int i = 0; i < sizeof(this->picsExtensionName) / sizeof(char*); i++) {
+        if (!(strcmp(picsExtensionName[i], StrConvertor::getExtensionName(fileName)))) {
+            *fileType = FileType::PICTURE;
+            return FileType::PICTURE;
+        }
+    }
+    return FileType::UNKONW;
 }

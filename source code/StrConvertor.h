@@ -3,6 +3,7 @@
 #include <string.h>
 #include <icu.h>
 #include <codecvt>
+#include <string>
 
 #ifndef STR_CONVERTOR_H
 #define STR_CONVERTOR_H
@@ -56,6 +57,12 @@ public:
         return true;
     }
 
+    static char* getExtensionName(char* fileName, char flag='.') {
+        char* resStr;
+
+        resStr = strrchr(fileName, flag) + 1;
+        return resStr;
+    }
 
     static void gbkToUTF8(char* target, int targetCapacity) {
         using namespace std;
@@ -79,12 +86,25 @@ public:
 
 
 
-    static std::wstring UTF8ToUnicode(const std::string& str)
+    static std::wstring utf8ToUnicode(const std::string& str)
     {
         std::wstring ret;
         try {
             std::wstring_convert< std::codecvt_utf8<wchar_t> > wcv;
             ret = wcv.from_bytes(str);
+        }
+        catch (...) {
+            return nullptr;
+        }
+        return ret;
+    }
+
+    static std::string unicodeToUTF8(const std::wstring& str)
+    {
+        std::string ret;
+        try {
+            std::wstring_convert< std::codecvt_utf8<wchar_t> > conv;
+            ret = conv.to_bytes(str);
         }
         catch (...) {
             return nullptr;

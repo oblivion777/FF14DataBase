@@ -10,9 +10,11 @@
 #include <memory>
 #include <iomanip>
 #include <ctime>
-//#pragma execution_character_set("utf-8")
+//#include "md5.cpp"
+#pragma execution_character_set("utf-8")
 
 std::wstring UTF8ToUnicode(const std::string& str);
+std::string UnicodeToUTF8(const std::wstring& str);
 std::string timeTag(unsigned int);
 using namespace std;
 
@@ -28,10 +30,12 @@ int main() {
 	ofs << "Kräuter☣☤✘☒♛▼♫⌘爱扥a" << endl;
 	ofs.close();
 	*/
-	string timesss;
-	timesss.assign(timeTag(556));
-	cout<<timesss << endl<<strlen(timesss.c_str());
-
+	ofstream ofs;
+	ofs.open("test.txt",ios::out|ios::binary);
+	wstring a(L"Kräuter☣☤✘☒♛▼♫⌘爱扥a");
+	string b;
+	b = UnicodeToUTF8(a);
+	ofs << "Kräuter☣☤✘☒♛▼♫⌘爱扥a" << endl << b << endl;
 
 	return 0;
 }
@@ -43,6 +47,19 @@ std::wstring UTF8ToUnicode(const std::string& str)
 	try {
 		std::wstring_convert< std::codecvt_utf8<wchar_t> > wcv;
 		ret = wcv.from_bytes(str);
+	}
+	catch (...) {
+		return nullptr;
+	}
+	return ret;
+}
+
+std::string UnicodeToUTF8(const std::wstring& str)
+{
+	std::string ret;
+	try {
+		std::wstring_convert< std::codecvt_utf8<wchar_t> > conv;
+		ret = conv.to_bytes(str);
 	}
 	catch (...) {
 		return nullptr;

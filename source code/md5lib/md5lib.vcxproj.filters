@@ -23,10 +23,13 @@
     <ClCompile Include="md5.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="md5file.cpp">
+    <ClCompile Include="md5File.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="md5String.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

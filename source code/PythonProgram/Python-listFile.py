@@ -10,3 +10,4 @@ for root,dirs,files in os.walk(path):
         outFileList.write(buff)
         outFileList.write("\n".encode("utf-8"))
 print("Created [D:/FF14DataBase/_log/fileList-utf8.txt] successfully")
+outFileList.close()

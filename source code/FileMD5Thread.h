@@ -23,16 +23,21 @@ private:
     //wofstream wOutLog;
     static std::mutex logLock;//日志锁
     std::mutex* plck;//默认所有对象使用相同的锁
+    char* FileMD5Thread::modsExtensionName[2] = { "ttmp","ttmp2" };
+    char* FileMD5Thread::picsExtensionName[3] = { "jpg","png","gif" };
 public:  
-    enum class ThreadsAction
+    enum class FileType//文件类型
     {
-        TO_FILE, TO_MYSQL
+        UNKONW, MOD, PICTURE, OTHER
     };
 private:
-    int fileMd5Sum(sql::Statement*, ThreadsAction);
+    int fileMd5Sum(sql::Statement*);
     std::string timeTag(tm*);
 public:
     FileMD5Thread(char* in = MODS_LIST_FILE, char* out = OPERATE_MYSQL_LOG_FILE);
+    FileType bpFileType(char*);
+    FileMD5Thread::FileType bpFileType(char* fileName, FileType* fileType);
+    //判断文件类型
     //int md5ToFile(void);//MD5输出到文件
     
     int run();

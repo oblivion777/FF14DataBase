@@ -88,16 +88,16 @@ std::string getFileMD5W(const wchar_t*);
 #pragma once
 
 /**********************************************************************/
+/*
 #ifdef _DEBUG //设置lib文件的路径
 #pragma comment(lib,".\\resource\\md5\\MD5DigestString_Debug.lib")
 #else
 #pragma comment(lib,".\\resource\\md5\\MD5DigestString_Release.lib")
 #endif
+*/
 
 #ifndef COMMON_SOURCE_MD5_H
 #define COMMON_SOURCE_MD5_H
-
-
 
 namespace md5 {
 

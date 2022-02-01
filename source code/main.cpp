@@ -6,14 +6,19 @@ using namespace std;
 sql::Connection* connect();
 
 int main(int argc,char *argv[]) {
-    system("D:/FF14DataBase/PythonProgram/Python-listFile.py");
+
+    //fileListAll();
+
+#define TEST_MYSQL
+#ifdef TEST_MYSQL
+    //system("D:/FF14DataBase/PythonProgram/Python-listFile.py");
     FileMD5Thread sqlTest = FileMD5Thread();
     sql::Connection* conn = connect();
     sqlTest.run(conn);
     //sqlTest.run();
-
-
     conn->close();
+#endif // TEST_MYSQL
+
 
 #ifdef _DEBUG
     system("pause");
