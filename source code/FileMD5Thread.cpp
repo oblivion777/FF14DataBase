@@ -9,17 +9,17 @@ int FileMD5Thread::fileMD5SumToMySQL(sql::Statement* state)
     //char* buff = new char[FILE_NAME_PATH_SIZE*2];
     MYSQL_CHAR buff[FILE_NAME_PATH_SIZE * 2] = { 0 };
     wstring wstrFullFilePath;
-    string pathWithFileMD5;
+    string pathWithFileMD5;//文件路径与文件MD5值再次求MD5用于唯一索引
     MYSQL_CHAR buffMD5[128] = { 0 };
     MYSQL_CHAR fileName[FILE_NAME_PATH_SIZE] = { 0 };
     MYSQL_CHAR filePath[FILE_NAME_PATH_SIZE] = { 0 };
-    tm* ltm = new tm;
+    tm* ltm = new tm;//获取时间的结构体
     FileType fileType = FileType::UNKONW;
     while (inFile.getline(buff, FILE_NAME_PATH_SIZE))
     {
         //wcstombs(buff,wstrFullFilePath, FILE_NAME_PATH_SIZE*2);
         try
-        {// 获取文件MD5
+        {   /*获取文件MD5*/
             wstrFullFilePath = StrConvertor::utf8ToUnicode(buff);
             strcpy(buffMD5, getFileMD5W(wstrFullFilePath.c_str()).c_str());
         }
@@ -46,20 +46,20 @@ int FileMD5Thread::fileMD5SumToMySQL(sql::Statement* state)
             switch (fileType)
             {
             case FileMD5Thread::FileType::MOD: {
-                sprintf(buff, "INSERT INTO mods(id,filename,path,md5,path_with_file_md5) VALUE(\"%s\",\"%s\",\"%s\",\"%s\",\"%s\")"\
-                    , timeTag(ltm).c_str(), fileName, filePath, buffMD5, pathWithFileMD5.c_str());
+                sprintf(buff, "INSERT INTO mods(id,filename,path,md5,path_with_file_md5) VALUE(\"%s\",\"%s\",\"%s\",\"%s\",\"%s\")",\
+                    timeTag(ltm).c_str(), fileName, filePath, buffMD5, pathWithFileMD5.c_str());
                 state->executeUpdate(buff);
                 break;
             }
             case FileMD5Thread::FileType::PICTURE: {
-                sprintf(buff, "INSERT INTO preview_pics(id,filename,path,pic_md5) VALUE(\"%s\",\"%s\",\"%s\",\"%s\")"\
-                    , timeTag(ltm).c_str(), fileName, filePath, buffMD5);
+                sprintf(buff, "INSERT INTO preview_pics(id,filename,path,pic_md5) VALUE(\"%s\",\"%s\",\"%s\",\"%s\")",\
+                    timeTag(ltm).c_str(), fileName, filePath, buffMD5);
                 state->executeUpdate(buff);
                 break;
             }
             case FileMD5Thread::FileType::OTHER: {
-                sprintf(buff, "INSERT INTO other(id,filename,path,md5) VALUE(\"%s\",\"%s\",\"%s\",\"%s\")"\
-                    , timeTag(ltm).c_str(), fileName, filePath, buffMD5);
+                sprintf(buff, "INSERT INTO other(id,filename,path,md5) VALUE(\"%s\",\"%s\",\"%s\",\"%s\")",\
+                    timeTag(ltm).c_str(), fileName, filePath, buffMD5);
                 state->executeUpdate(buff);
                 break;
             }
