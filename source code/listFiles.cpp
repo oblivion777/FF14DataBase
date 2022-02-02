@@ -111,11 +111,11 @@ void listFilesCurrent(const wchar_t* dir, ofstream& outFile)
 }
 
 
-void fileListAll() {
+void fileListAll(const wchar_t* dir) {
     //char dir[] = "D:\\Games\\MODconfig";
     //char dir[] = "E:\\Games\\Final Fantasy XIV\\最终幻想XIV\\game\\sqpack\\ffxiv";
     //wchar_t dir[] = L"F:\\[FFXIV]MODS\\MOD";
-    wchar_t dir[] = L"F:\\[FFXIV]MODS\\MOD";
+    //wchar_t dir[] = L"F:\\[FFXIV]MODS\\MOD";
 
     ofstream outFile;
     outFile.open(MODS_LIST_FILE, ios::out);

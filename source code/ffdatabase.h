@@ -21,7 +21,7 @@ constexpr char* OPERATE_MYSQL_LOG_FILE = "_log/mysql_log.txt";
 
 
 void fileList();
-void fileListAll();
+void fileListAll(const wchar_t*);
 #ifdef UNICODE
 void listFilesCurrent(const wchar_t* dir, std::ofstream&);
 void listFiles(const wchar_t* dir, std::ofstream&);

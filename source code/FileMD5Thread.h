@@ -31,7 +31,7 @@ public:
         UNKONW, MOD, PICTURE, OTHER
     };
 private:
-    int fileMd5Sum(sql::Statement*);
+    int fileMD5SumToMySQL(sql::Statement*);
     std::string timeTag(tm*);
 public:
     FileMD5Thread(char* in = MODS_LIST_FILE, char* out = OPERATE_MYSQL_LOG_FILE);
@@ -40,7 +40,6 @@ public:
     //判断文件类型
     //int md5ToFile(void);//MD5输出到文件
     
-    int run();
     //多线程计算MD5
     int run(sql::Connection*);//传入Connection对象写入MySQL数据库
     static void endResetZero(char*, int);

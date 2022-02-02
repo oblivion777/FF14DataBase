@@ -4,10 +4,10 @@
 using namespace std;
 //void fileList1();
 sql::Connection* connect();
-
+void setTableModType(sql::Connection* conn);
 int main(int argc,char *argv[]) {
 
-    //fileListAll();
+    fileListAll(L"E:\\Games\\FFXIVMODS");
 
 #define TEST_MYSQL
 #ifdef TEST_MYSQL
@@ -16,6 +16,7 @@ int main(int argc,char *argv[]) {
     sql::Connection* conn = connect();
     sqlTest.run(conn);
     //sqlTest.run();
+    setTableModType(conn);
     conn->close();
 #endif // TEST_MYSQL
 
@@ -66,5 +67,16 @@ sql::Connection* connect() {
     return con;
 }
 
-
+void setTableModType(sql::Connection* conn) {
+    sql::Statement* state = conn->createStatement();
+    ifstream sqlSyntax;
+    constexpr int buffLen = 256;
+    char sqlSyntaxBuff[buffLen];
+    sqlSyntax.open("_log/set_mods_type.sql",ios::in);
+    while (sqlSyntax.getline(sqlSyntaxBuff, buffLen)) {
+        state->execute(sqlSyntaxBuff);
+    }
+    state->close();
+    sqlSyntax.close();
+}
 

@@ -2,7 +2,7 @@
 //#pragma once
 
 
-int FileMD5Thread::fileMd5Sum(sql::Statement* state)
+int FileMD5Thread::fileMD5SumToMySQL(sql::Statement* state)
 {
     typedef char MYSQL_CHAR;
     constexpr int FILE_NAME_PATH_SIZE = 256;
@@ -34,11 +34,11 @@ int FileMD5Thread::fileMd5Sum(sql::Statement* state)
         }
 
         StrConvertor::cutStr(buff, filePath, fileName, '\\');
-        
-        bpFileType(fileName,&fileType);//判断文件类型
+
+        bpFileType(fileName, &fileType);//判断文件类型
         pathWithFileMD5.assign(filePath).append(buffMD5);
-        pathWithFileMD5.assign(md5::digestString(pathWithFileMD5.c_str())); 
-        
+        pathWithFileMD5.assign(md5::digestString(pathWithFileMD5.c_str()));
+
         /*写入数据库*/
         try
         {
@@ -46,19 +46,19 @@ int FileMD5Thread::fileMd5Sum(sql::Statement* state)
             switch (fileType)
             {
             case FileMD5Thread::FileType::MOD: {
-                sprintf(buff, "insert into mods(id,filename,path,md5,path_with_file_md5) value(\"%s\",\"%s\",\"%s\",\"%s\",\"%s\")"\
+                sprintf(buff, "INSERT INTO mods(id,filename,path,md5,path_with_file_md5) VALUE(\"%s\",\"%s\",\"%s\",\"%s\",\"%s\")"\
                     , timeTag(ltm).c_str(), fileName, filePath, buffMD5, pathWithFileMD5.c_str());
                 state->executeUpdate(buff);
                 break;
             }
             case FileMD5Thread::FileType::PICTURE: {
-                sprintf(buff, "insert into preview_pics(id,filename,path,pic_md5) value(\"%s\",\"%s\",\"%s\",\"%s\")"\
+                sprintf(buff, "INSERT INTO preview_pics(id,filename,path,pic_md5) VALUE(\"%s\",\"%s\",\"%s\",\"%s\")"\
                     , timeTag(ltm).c_str(), fileName, filePath, buffMD5);
                 state->executeUpdate(buff);
                 break;
             }
             case FileMD5Thread::FileType::OTHER: {
-                sprintf(buff, "insert into other(id,filename,path,md5) value(\"%s\",\"%s\",\"%s\",\"%s\")"\
+                sprintf(buff, "INSERT INTO other(id,filename,path,md5) VALUE(\"%s\",\"%s\",\"%s\",\"%s\")"\
                     , timeTag(ltm).c_str(), fileName, filePath, buffMD5);
                 state->executeUpdate(buff);
                 break;
@@ -103,7 +103,7 @@ int FileMD5Thread::run(sql::Connection* conn)
     }
     int i;
     for (i = 0; i < threadCount; i++) {
-        pth[i] = thread(&FileMD5Thread::fileMd5Sum, this, state);
+        pth[i] = thread(&FileMD5Thread::fileMD5SumToMySQL, this, state);
     }
     for (i = 0; i < threadCount; i++) {
         pth[i].join();
@@ -120,33 +120,7 @@ int FileMD5Thread::run(sql::Connection* conn)
     return errors;
 }
 
-int FileMD5Thread::run() {
-    //clock_t start_time = clock();//计时开始
-        //打开保存文件列表的文件
-    openIoFile();
-    sql::Statement* state = NULL;
-    sqlLock = &(this->logLock);
-    thread* pth = new thread[threadCount];
-    if (pth == NULL) {
-        return -404;
-    }
-    int i;
-    for (i = 0; i < threadCount; i++) {
-        pth[i] = thread(&FileMD5Thread::fileMd5Sum, this, state);//危险行为!!!!!!
-    }
-    for (i = 0; i < threadCount; i++) {
-        pth[i].join();
-    }
-    //计时结束
-    //clock_t end_time = clock();
-    //cout << (double)clock() / CLK_TCK << "s" << endl;
-    //outFile << endl << "耗时:" << (double)clock() / CLK_TCK << "s" << endl;
-    closeIoFile();
-    delete[] pth;
-    return errors;
-}
-
-void FileMD5Thread::endResetZero(char* str,int strSize)
+void FileMD5Thread::endResetZero(char* str, int strSize)
 {
     for (int i = 0; i < strSize; i++) {
         str[i] = '\0';
@@ -207,7 +181,7 @@ std::mutex FileMD5Thread::logLock;
 
 
 
-FileMD5Thread::FileMD5Thread( char* listFile,  char* outMD5File)
+FileMD5Thread::FileMD5Thread(char* listFile, char* outMD5File)
 {
     this->listFile = listFile;
     this->outMD5File = outMD5File;
@@ -216,7 +190,7 @@ FileMD5Thread::FileMD5Thread( char* listFile,  char* outMD5File)
 
 FileMD5Thread::FileType FileMD5Thread::bpFileType(char* fileName)
 {
-    FileMD5Thread::FileType fileType=FileType::UNKONW;
+    FileMD5Thread::FileType fileType = FileType::UNKONW;
     for (int i = 0; i < sizeof(this->modsExtensionName) / sizeof(char*); i++) {
         if (!(strcmp(modsExtensionName[i], StrConvertor::getExtensionName(fileName)))) {
             fileType = FileType::MOD;
