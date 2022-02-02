@@ -20,7 +20,7 @@ int main(int argc,char *argv[]) {
     conn->close();
 #endif // TEST_MYSQL
 
-
+    FileMD5Thread::releaseFileTypeMap();
 #ifdef _DEBUG
     system("pause");
 #endif // DEBUG

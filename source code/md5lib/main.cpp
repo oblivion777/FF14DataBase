@@ -30,13 +30,16 @@ int main() {
 	ofs << "Kräuter☣☤✘☒♛▼♫⌘爱扥a" << endl;
 	ofs.close();
 	*/
-	ofstream ofs;
-	ofs.open("test.txt",ios::out|ios::binary);
-	wstring a(L"Kräuter☣☤✘☒♛▼♫⌘爱扥a");
-	string b;
-	b = UnicodeToUTF8(a);
-	ofs << "Kräuter☣☤✘☒♛▼♫⌘爱扥a" << endl << b << endl;
-
+	int i = 0;
+	int* pi = nullptr;
+	pi = &i;
+	INT* qqq = new INT;
+	
+	cout << qqq << endl;
+	delete qqq;
+	qqq = nullptr;
+	delete qqq;
+	cout << qqq << endl;
 	return 0;
 }
 

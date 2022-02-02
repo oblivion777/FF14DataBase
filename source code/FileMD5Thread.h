@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <mutex>
+#include <map>
 #include "md5.h"
 #include "ffdatabase.h"
 //#include "mysql/jdbc.h"
@@ -10,7 +11,7 @@
 #define FILEMD5THREAD_H
 using namespace std;
 class FileMD5Thread {
-private:
+private://成员变量
     char* listFile;
     char* outMD5File;
     unsigned short int threadCount = 14;//线程数 
@@ -23,20 +24,27 @@ private:
     //wofstream wOutLog;
     static std::mutex logLock;//日志锁
     std::mutex* sqlLock;//默认所有对象使用相同的锁
-    char* FileMD5Thread::modsExtensionName[2] = { "ttmp2","ttmp"};
-    char* FileMD5Thread::picsExtensionName[6] = { "jpg","png","gif","bmp","PNG","webp"};
+    //char* modsExtensionName[2] = { "ttmp2","ttmp"};
+    //char* picsExtensionName[6] = { "jpg","png","gif","bmp","PNG","webp"};
 public:  
-    enum class FileType//文件类型
-    {
+    //文件类型
+    enum class FileType {
         UNKONW, MOD, PICTURE, OTHER
     };
-private:
+    static map<string, FileType>* pFileTypeMap;//内存未释放!!!
+    
+private:/*==========成员函数=========*/
     int fileMD5SumToMySQL(sql::Statement*);
     std::string timeTag(tm*);
+    
 public:
     FileMD5Thread(char* in = MODS_LIST_FILE, char* out = OPERATE_MYSQL_LOG_FILE);
+    //判断文件类型
     FileType bpFileType(char*);
-    FileMD5Thread::FileType bpFileType(char* fileName, FileType* fileType);
+    //初始化map
+    static void initializeFileTypeMap(void);
+    //释放map
+    static bool releaseFileTypeMap(void);
     //判断文件类型
     //int md5ToFile(void);//MD5输出到文件
     

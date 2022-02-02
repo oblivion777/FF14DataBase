@@ -14,7 +14,6 @@ int FileMD5Thread::fileMD5SumToMySQL(sql::Statement* state)
     MYSQL_CHAR fileName[FILE_NAME_PATH_SIZE] = { 0 };
     MYSQL_CHAR filePath[FILE_NAME_PATH_SIZE] = { 0 };
     tm* ltm = new tm;//获取时间的结构体
-    FileType fileType = FileType::UNKONW;
     while (inFile.getline(buff, FILE_NAME_PATH_SIZE))
     {
         //wcstombs(buff,wstrFullFilePath, FILE_NAME_PATH_SIZE*2);
@@ -34,8 +33,6 @@ int FileMD5Thread::fileMD5SumToMySQL(sql::Statement* state)
         }
 
         StrConvertor::cutStr(buff, filePath, fileName, '\\');
-
-        bpFileType(fileName, &fileType);//判断文件类型
         pathWithFileMD5.assign(filePath).append(buffMD5);
         pathWithFileMD5.assign(md5::digestString(pathWithFileMD5.c_str()));
 
@@ -43,7 +40,7 @@ int FileMD5Thread::fileMD5SumToMySQL(sql::Statement* state)
         try
         {
             std::lock_guard<std::mutex> lockguard(*sqlLock);
-            switch (fileType)
+            switch (bpFileType(fileName))//判断文件类型
             {
             case FileMD5Thread::FileType::MOD: {
                 sprintf(buff, "INSERT INTO mods(id,filename,path,md5,path_with_file_md5) VALUE(\"%s\",\"%s\",\"%s\",\"%s\",\"%s\")",\
@@ -63,21 +60,21 @@ int FileMD5Thread::fileMD5SumToMySQL(sql::Statement* state)
                 state->executeUpdate(buff);
                 break;
             }
-            default:
+            default: {
                 break;
             }
+                //switch end
+            }//switch end
         }
         catch (...)
-        {
+        {   //输出日志
             std::lock_guard<std::mutex> lockguard(logLock);
             errors++;
             outLog << "SQL syntax error: " << buff << endl;
         }
-
         this->endResetZero(buff, FILE_NAME_PATH_SIZE * 2);
         this->endResetZero(fileName, FILE_NAME_PATH_SIZE);
         this->endResetZero(filePath, FILE_NAME_PATH_SIZE);
-        fileType = FileType::UNKONW;
     }
     //delete[] buff;
     delete ltm;
@@ -171,14 +168,57 @@ std::string FileMD5Thread::timeTag(tm* ltm) {
     return std::string(timeStr);
 }
 
+void FileMD5Thread::initializeFileTypeMap(void)
+{   //初始化map
+    if (pFileTypeMap != nullptr) {
+        return;
+    }
+    map<string, FileMD5Thread::FileType>* fileTypeMap=new map<string, FileMD5Thread::FileType>;//申请堆内存
+    char* modsExtensionName[] = { "ttmp2","ttmp" };
+    char* picsExtensionName[] = { "jpg","png","gif","bmp","PNG","webp" };
+    int i;
+    for (i = 0; i < sizeof(modsExtensionName) / sizeof(char*); i++) {
+        fileTypeMap->insert(pair<string, FileType>(modsExtensionName[i], FileType::MOD));
+    }
+    for (i = 0; i < sizeof(picsExtensionName) / sizeof(char*); i++) {
+        fileTypeMap->insert(pair<string, FileType>(picsExtensionName[i], FileType::PICTURE));
+    }
+    pFileTypeMap = fileTypeMap;
+    return;
+}
 
+bool FileMD5Thread::releaseFileTypeMap(void)
+{   /*释放FileTypeMap*/
+    try
+    {
+        delete pFileTypeMap;
+        pFileTypeMap = nullptr;
+    }
+    catch (...)
+    {
+        return false;
+    }
+    return true;
+}
+
+FileMD5Thread::FileType FileMD5Thread::bpFileType(char* fileName)
+{
+    string extensionName(strrchr(fileName, '.') + 1);
+    if (!(pFileTypeMap->count(extensionName))) {
+        return FileType::OTHER;
+    }
+    else {
+        return (*pFileTypeMap)[extensionName];
+    }
+    
+}
 
 /***********初始化***********/
 int FileMD5Thread::errors = 0;
 unsigned int FileMD5Thread::timeCount = 0;
 time_t FileMD5Thread::now = 0;
 std::mutex FileMD5Thread::logLock;
-
+map<string, FileMD5Thread::FileType>* FileMD5Thread::pFileTypeMap=nullptr;
 
 
 FileMD5Thread::FileMD5Thread(char* listFile, char* outMD5File)
@@ -186,40 +226,5 @@ FileMD5Thread::FileMD5Thread(char* listFile, char* outMD5File)
     this->listFile = listFile;
     this->outMD5File = outMD5File;
     sqlLock = &(this->logLock);
-}
-
-FileMD5Thread::FileType FileMD5Thread::bpFileType(char* fileName)
-{
-    FileMD5Thread::FileType fileType = FileType::UNKONW;
-    for (int i = 0; i < sizeof(this->modsExtensionName) / sizeof(char*); i++) {
-        if (!(strcmp(modsExtensionName[i], StrConvertor::getExtensionName(fileName)))) {
-            fileType = FileType::MOD;
-            break;
-        }
-    }
-    for (int i = 0; i < sizeof(this->picsExtensionName) / sizeof(char*); i++) {
-        if (!(strcmp(picsExtensionName[i], StrConvertor::getExtensionName(fileName)))) {
-            fileType = FileType::PICTURE;
-            break;
-        }
-    }
-    return fileType;
-}
-
-FileMD5Thread::FileType FileMD5Thread::bpFileType(char* fileName, FileType* fileType)
-{
-    for (int i = 0; i < sizeof(this->modsExtensionName) / sizeof(char*); i++) {
-        if (!(strcmp(modsExtensionName[i], StrConvertor::getExtensionName(fileName)))) {
-            *fileType = FileType::MOD;
-            return FileType::MOD;
-        }
-    }
-    for (int i = 0; i < sizeof(this->picsExtensionName) / sizeof(char*); i++) {
-        if (!(strcmp(picsExtensionName[i], StrConvertor::getExtensionName(fileName)))) {
-            *fileType = FileType::PICTURE;
-            return FileType::PICTURE;
-        }
-    }
-    *fileType = FileType::OTHER;
-    return FileType::OTHER;
+    initializeFileTypeMap();
 }
