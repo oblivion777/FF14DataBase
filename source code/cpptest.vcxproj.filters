@@ -27,6 +27,9 @@
     <ClCompile Include="StrConvertor.h">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="AlterMySQL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ffdatabase.h">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="md5.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AlterMySQL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -3,8 +3,14 @@
 //#pragma once
 
 
-int FileMD5Thread::fileMD5SumToMySQL(sql::Statement* state)
+int FileMD5Thread::fileMD5SumToMySQL(sql::mysql::MySQL_Driver* driver)
 {
+    sql::Connection* conn = nullptr;
+    {
+        std::lock_guard<std::mutex> lockguard(*sqlLock);
+        conn = AlterMySQL::connect(driver);
+    }
+    sql::Statement* state = conn->createStatement();
     typedef char MYSQL_CHAR;
     constexpr int FILE_NAME_PATH_SIZE = 256;
     //char* buff = new char[FILE_NAME_PATH_SIZE*2];
@@ -40,7 +46,7 @@ int FileMD5Thread::fileMD5SumToMySQL(sql::Statement* state)
         /*写入数据库*/
         try
         {
-            std::lock_guard<std::mutex> lockguard(*sqlLock);
+            //std::lock_guard<std::mutex> lockguard(*sqlLock);
             switch (bpFileType(fileName))//判断文件类型
             {
             case FileMD5Thread::FileType::MOD: {
@@ -78,6 +84,8 @@ int FileMD5Thread::fileMD5SumToMySQL(sql::Statement* state)
         this->endResetZero(filePath, FILE_NAME_PATH_SIZE);
     }
     //delete[] buff;
+    state->close();
+    conn->close();
     delete ltm;
     return errors;
 }
@@ -85,23 +93,23 @@ int FileMD5Thread::fileMD5SumToMySQL(sql::Statement* state)
 
 
 
-int FileMD5Thread::run(sql::Connection* conn)
+int FileMD5Thread::run(sql::mysql::MySQL_Driver* driver)
 {
-    /*传入Connection对象时,写入MySQL数据库
+    /*传入MySQL_Driver对象时,写入MySQL数据库
     */
     clock_t start_time = clock();//计时开始
 
     openIoFile();
     std::mutex lckSQL;//SQL写入锁
     this->sqlLock = &lckSQL;
-    sql::Statement* state = conn->createStatement();
+
     thread* pth = new thread[threadCount];
     if (pth == NULL) {
         return -404;
     }
     int i;
     for (i = 0; i < threadCount; i++) {
-        pth[i] = thread(&FileMD5Thread::fileMD5SumToMySQL, this, state);
+        pth[i] = thread(&FileMD5Thread::fileMD5SumToMySQL, this, driver);
     }
     for (i = 0; i < threadCount; i++) {
         pth[i].join();
@@ -111,8 +119,7 @@ int FileMD5Thread::run(sql::Connection* conn)
     outLog << "elapsed time: " << (double)clock() / CLK_TCK << "s\n"
         << "error count: " << errors;
     //收尾
-    state->close();
-    delete state;
+    
     delete[] pth;
     closeIoFile();
     return errors;
@@ -158,7 +165,7 @@ void FileMD5Thread::closeIoFile()
 }
 
 std::string FileMD5Thread::timeTag(tm* ltm) {
-
+    std::lock_guard<std::mutex> lockguard(*sqlLock);
     (now == time(0)) ? (timeCount++) : (timeCount = 0);
     now = time(0);
 
@@ -213,8 +220,7 @@ FileMD5Thread::FileType FileMD5Thread::bpFileType(char* fileName)
     }
     else {
         return (*pFileTypeMap)[extensionName];
-    }
-    
+    }   
 }
 
 /***********初始化***********/

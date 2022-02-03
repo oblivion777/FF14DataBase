@@ -138,12 +138,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AlterMySQL.cpp" />
     <ClCompile Include="listFiles.cpp" />
     <ClCompile Include="StrConvertor.h" />
     <ClCompile Include="FileMD5Thread.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AlterMySQL.h" />
     <ClInclude Include="FileMD5Thread.h" />
     <ClInclude Include="ffdatabase.h" />
     <ClInclude Include="md5.h" />

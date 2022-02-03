@@ -9,6 +9,7 @@
 #include "FileMD5Thread.h"
 #include "mysql/jdbc.h"
 #include "StrConvertor.h"
+#include "AlterMySQL.h"
 #pragma execution_character_set("utf-8")
 
 #pragma once
@@ -30,3 +31,5 @@ void listFilesCurrent(const char* dir);
 void listFilesCurrentW(wchar_t* dir);
 void listFiles(const char* dir, std::ofstream&);
 #endif
+
+/*===========================================================================*/

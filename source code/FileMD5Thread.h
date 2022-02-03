@@ -31,7 +31,7 @@ public:
         UNKONW, MOD, PICTURE, OTHER
     };
 private:/*==========成员函数,对象=========*/
-    int fileMD5SumToMySQL(sql::Statement*);
+    int fileMD5SumToMySQL(sql::mysql::MySQL_Driver*);
     std::string timeTag(tm*);
     static map<string, FileType>* pFileTypeMap;
 public:
@@ -46,16 +46,16 @@ public:
     //int md5ToFile(void);//MD5输出到文件
     
     //多线程计算MD5
-    int run(sql::Connection*);//传入Connection对象写入MySQL数据库
+    int run(sql::mysql::MySQL_Driver*);//传入MySQL_Driver对象写入MySQL数据库
     static void endResetZero(char*, int);
     static void endResetZero(wchar_t*, int);
     void openIoFile();
     void closeIoFile();
 
-    int close() {
+    bool close() {
         inFile.close();
-        outLog.close();
-        return 0;
+        outLog.close();      
+        return releaseFileTypeMap();
     }
     int setLock(std::mutex* lock) {
         /*设定锁*/
