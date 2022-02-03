@@ -1,4 +1,5 @@
 ﻿#include "FileMD5Thread.h"
+#include <cstdlib>
 //#pragma once
 
 
@@ -119,9 +120,11 @@ int FileMD5Thread::run(sql::Connection* conn)
 
 void FileMD5Thread::endResetZero(char* str, int strSize)
 {
+    /*
     for (int i = 0; i < strSize; i++) {
         str[i] = '\0';
-    }
+    }*/
+    memset(str, 0, strSize);
 }
 
 void FileMD5Thread::endResetZero(wchar_t* str, int strSize)
@@ -155,6 +158,7 @@ void FileMD5Thread::closeIoFile()
 }
 
 std::string FileMD5Thread::timeTag(tm* ltm) {
+
     (now == time(0)) ? (timeCount++) : (timeCount = 0);
     now = time(0);
 

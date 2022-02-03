@@ -23,20 +23,17 @@ private://成员变量
     //wifstream wInFile;
     //wofstream wOutLog;
     static std::mutex logLock;//日志锁
-    std::mutex* sqlLock;//默认所有对象使用相同的锁
-    //char* modsExtensionName[2] = { "ttmp2","ttmp"};
-    //char* picsExtensionName[6] = { "jpg","png","gif","bmp","PNG","webp"};
+    std::mutex* sqlLock;//默认所有对象使用日志锁
+    
 public:  
     //文件类型
     enum class FileType {
         UNKONW, MOD, PICTURE, OTHER
     };
-    static map<string, FileType>* pFileTypeMap;//内存未释放!!!
-    
-private:/*==========成员函数=========*/
+private:/*==========成员函数,对象=========*/
     int fileMD5SumToMySQL(sql::Statement*);
     std::string timeTag(tm*);
-    
+    static map<string, FileType>* pFileTypeMap;
 public:
     FileMD5Thread(char* in = MODS_LIST_FILE, char* out = OPERATE_MYSQL_LOG_FILE);
     //判断文件类型

@@ -38,18 +38,17 @@ sql::Connection* connect() {
     std::string username;
     std::string password;
     char loginInfoBuff[loginInfoLen] = { 0 };
-
     loginInfo.open("_log/login_info.txt", ios::in);
     while (loginInfo.getline(loginInfoBuff, loginInfoLen))
-    {
+    {   
         if ((strstr(loginInfoBuff, "url: "))) {
-            url.append(loginInfoBuff + strlen("url: "));
+            url.assign(loginInfoBuff + strlen("url: "));
         }
         else if ((strstr(loginInfoBuff, "username: "))) {
-            username.append(loginInfoBuff + strlen("username: "));
+            username.assign(loginInfoBuff + strlen("username: "));
         }
         else if ((strstr(loginInfoBuff, "password: "))) {
-            password.append(loginInfoBuff + strlen("password: "));
+            password.assign(loginInfoBuff + strlen("password: "));
         }
     }
     try
