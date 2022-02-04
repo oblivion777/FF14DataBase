@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "md5lib", "md5lib\md5lib.vcx
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PythonProgram", "PythonProgram\PythonProgram.pyproj", "{474D4799-5C31-445E-A19D-34F5200B0B7D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModsExplorer", "ModsExplorer\ModsExplorer.csproj", "{0DA462FC-8398-43ED-BF96-243647527DCC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,18 @@ Global
 		{474D4799-5C31-445E-A19D-34F5200B0B7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{474D4799-5C31-445E-A19D-34F5200B0B7D}.Release|x64.ActiveCfg = Release|Any CPU
 		{474D4799-5C31-445E-A19D-34F5200B0B7D}.Release|x86.ActiveCfg = Release|Any CPU
+		{0DA462FC-8398-43ED-BF96-243647527DCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DA462FC-8398-43ED-BF96-243647527DCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DA462FC-8398-43ED-BF96-243647527DCC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0DA462FC-8398-43ED-BF96-243647527DCC}.Debug|x64.Build.0 = Debug|Any CPU
+		{0DA462FC-8398-43ED-BF96-243647527DCC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0DA462FC-8398-43ED-BF96-243647527DCC}.Debug|x86.Build.0 = Debug|Any CPU
+		{0DA462FC-8398-43ED-BF96-243647527DCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DA462FC-8398-43ED-BF96-243647527DCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DA462FC-8398-43ED-BF96-243647527DCC}.Release|x64.ActiveCfg = Release|Any CPU
+		{0DA462FC-8398-43ED-BF96-243647527DCC}.Release|x64.Build.0 = Release|Any CPU
+		{0DA462FC-8398-43ED-BF96-243647527DCC}.Release|x86.ActiveCfg = Release|Any CPU
+		{0DA462FC-8398-43ED-BF96-243647527DCC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

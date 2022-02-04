@@ -23,6 +23,7 @@ private://成员变量
     //wifstream wInFile;
     //wofstream wOutLog;
     static std::mutex logLock;//日志锁
+    static std::mutex timeTagLock;//时间戳锁
     std::mutex* sqlLock;//默认所有对象使用日志锁
     
 public:  
@@ -45,7 +46,7 @@ public:
     //判断文件类型
     //int md5ToFile(void);//MD5输出到文件
     
-    //多线程计算MD5
+    //多线程计算MD5,传入MySQL_Driver对象写入MySQL数据库
     int run(sql::mysql::MySQL_Driver*);//传入MySQL_Driver对象写入MySQL数据库
     static void endResetZero(char*, int);
     static void endResetZero(wchar_t*, int);

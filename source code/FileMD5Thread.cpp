@@ -21,6 +21,7 @@ int FileMD5Thread::fileMD5SumToMySQL(sql::mysql::MySQL_Driver* driver)
     MYSQL_CHAR fileName[FILE_NAME_PATH_SIZE] = { 0 };
     MYSQL_CHAR filePath[FILE_NAME_PATH_SIZE] = { 0 };
     tm* ltm = new tm;//获取时间的结构体
+
     while (inFile.getline(buff, FILE_NAME_PATH_SIZE))
     {
         //wcstombs(buff,wstrFullFilePath, FILE_NAME_PATH_SIZE*2);
@@ -50,21 +51,21 @@ int FileMD5Thread::fileMD5SumToMySQL(sql::mysql::MySQL_Driver* driver)
             switch (bpFileType(fileName))//判断文件类型
             {
             case FileMD5Thread::FileType::MOD: {
-                sprintf(buff, "INSERT INTO mods(id,filename,path,md5,path_with_file_md5) VALUE(\"%s\",\"%s\",\"%s\",\"%s\",\"%s\")",\
+                sprintf(buff, "INSERT INTO mods(id,filename,path,md5,path_with_file_md5) VALUE(\"%s\",\"%s\",\"%s\",\"%s\",\"%s\")", \
                     timeTag(ltm).c_str(), fileName, filePath, buffMD5, pathWithFileMD5.c_str());
-                state->executeUpdate(buff);
+                cout << state->executeUpdate(buff);
                 break;
             }
             case FileMD5Thread::FileType::PICTURE: {
                 sprintf(buff, "INSERT INTO preview_pics(id,filename,path,pic_md5) VALUE(\"%s\",\"%s\",\"%s\",\"%s\")",\
                     timeTag(ltm).c_str(), fileName, filePath, buffMD5);
-                state->executeUpdate(buff);
+                cout << state->executeUpdate(buff);
                 break;
             }
             case FileMD5Thread::FileType::OTHER: {
                 sprintf(buff, "INSERT INTO other(id,filename,path,md5) VALUE(\"%s\",\"%s\",\"%s\",\"%s\")",\
                     timeTag(ltm).c_str(), fileName, filePath, buffMD5);
-                state->executeUpdate(buff);
+                cout << state->executeUpdate(buff);
                 break;
             }
             default: {
@@ -165,14 +166,14 @@ void FileMD5Thread::closeIoFile()
 }
 
 std::string FileMD5Thread::timeTag(tm* ltm) {
-    std::lock_guard<std::mutex> lockguard(*sqlLock);
+    std::lock_guard<std::mutex> lockguard(timeTagLock);
     (now == time(0)) ? (timeCount++) : (timeCount = 0);
     now = time(0);
 
     //tm* ltm = new tm;
     constexpr int TIME_STR_LEN = 30;
     char timeStr[TIME_STR_LEN] = { 0 };
-    now = time(0);
+
     localtime_s(ltm, &now);
     sprintf_s<TIME_STR_LEN>(timeStr, "%d%02d%02d-%02d%02d%02d-%04x",
         1900 + ltm->tm_year, ltm->tm_mon + 1, ltm->tm_mday, ltm->tm_hour, ltm->tm_min, ltm->tm_sec, timeCount);
@@ -228,6 +229,7 @@ int FileMD5Thread::errors = 0;
 unsigned int FileMD5Thread::timeCount = 0;
 time_t FileMD5Thread::now = 0;
 std::mutex FileMD5Thread::logLock;
+std::mutex FileMD5Thread::timeTagLock;
 map<string, FileMD5Thread::FileType>* FileMD5Thread::pFileTypeMap=nullptr;
 
 
