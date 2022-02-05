@@ -35,10 +35,12 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(944, 561);
+            this.ClientSize = new System.Drawing.Size(1204, 761);
             this.Name = "Home";
             this.Text = "Form1";
+            this.SizeChanged += new System.EventHandler(this.Home_SizeChanged);
             this.ResumeLayout(false);
+
         }
 
         #endregion

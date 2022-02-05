@@ -15,3 +15,4 @@ D:\FF14DataBase\ModsExplorer\obj\Release\net6.0-windows10.0.19041.0\ModsExplorer
 D:\FF14DataBase\ModsExplorer\obj\Release\net6.0-windows10.0.19041.0\ref\ModsExplorer.dll
 D:\FF14DataBase\ModsExplorer\obj\Release\net6.0-windows10.0.19041.0\ModsExplorer.pdb
 D:\FF14DataBase\ModsExplorer\obj\Release\net6.0-windows10.0.19041.0\ModsExplorer.genruntimeconfig.cache
+D:\FF14DataBase\ModsExplorer\obj\Release\net6.0-windows10.0.19041.0\ModsExplorer.csproj.AssemblyReference.cache
