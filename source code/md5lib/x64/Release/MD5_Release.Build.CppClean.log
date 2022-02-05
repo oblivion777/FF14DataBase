@@ -1,5 +1,4 @@
-d:\ff14database\md5lib\x64\release\vc143.pdb
-d:\ff14database\md5lib\x64\release\.netcoreapp,version=v6.0.assemblyattributes.obj
+d:\ff14database\resource\md5\md5_release.pdb
 d:\ff14database\md5lib\x64\release\md5string.obj
 d:\ff14database\md5lib\x64\release\md5file.obj
 d:\ff14database\md5lib\x64\release\md5.obj
@@ -8,6 +7,6 @@ d:\ff14database\resource\md5\md5_release.lib
 d:\ff14database\md5lib\x64\release\md5lib.tlog\cl.command.1.tlog
 d:\ff14database\md5lib\x64\release\md5lib.tlog\cl.read.1.tlog
 d:\ff14database\md5lib\x64\release\md5lib.tlog\cl.write.1.tlog
-d:\ff14database\md5lib\x64\release\md5lib.tlog\link.command.1.tlog
-d:\ff14database\md5lib\x64\release\md5lib.tlog\link.read.1.tlog
-d:\ff14database\md5lib\x64\release\md5lib.tlog\link.write.1.tlog
+d:\ff14database\md5lib\x64\release\md5lib.tlog\lib-link.read.1.tlog
+d:\ff14database\md5lib\x64\release\md5lib.tlog\lib-link.write.1.tlog
+d:\ff14database\md5lib\x64\release\md5lib.tlog\lib.command.1.tlog
