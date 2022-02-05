@@ -22,5 +22,9 @@
 
 ```
 
+ISO C++17 标准 (/std:c++17)
+ISO C17 (2018)标准 (/std:c17)
+.NET 6.0
+
 ![_(:з」∠)_](https://blog.voids.cc/[BBC2C8AC]/%E5%8F%8C%E7%8C%AB%E7%8C%AB.jpg)
 
