@@ -11,10 +11,16 @@ namespace ModsExplorer
             InitializeComponent();
             
             modsPreviewPics=new ModsPreviewPics(this);
-            //ModsPreviewPics.ConnectMySQL();
+            
             //
+            /*
             CallMySQL callMySQL=new CallMySQL();
-            callMySQL.ConnectMySQL();
+            callMySQL.SelectPicsPath();
+            MessageBox.Show(callMySQL.GetPicPath());
+            MessageBox.Show(callMySQL.GetPicPath());
+            MessageBox.Show(callMySQL.GetPicPath());
+            */
+
         }       
 
         private void Home_SizeChanged(object sender, EventArgs e)

@@ -10,29 +10,51 @@ namespace ModsExplorer
     internal class CallMySQL
     {
         MySqlConnection conn;
+        MySqlCommand selectPicsPath;
+        MySqlDataReader reader;
 
+#pragma warning disable CS8618 // 在退出构造函数时，不可为 null 的字段必须包含非 null 值。请考虑声明为可以为 null。
         public CallMySQL()
         {
             conn = new MySqlConnection(GetLoginStr());
+            ConnectMySQL();
         }
 
         public CallMySQL(String conStr)
         {
             conn = new MySqlConnection(conStr);
+            ConnectMySQL();
+        }
+#pragma warning restore CS8618 // 在退出构造函数时，不可为 null 的字段必须包含非 null 值。请考虑声明为可以为 null。
+        public void SelectPicsPath()
+        { 
+            String sql = "SELECT filename,path FROM preview_pics LIMIT 200,100";
+            selectPicsPath=new MySqlCommand(sql,conn);
+            reader = selectPicsPath.ExecuteReader();
         }
 
-        public void ConnectMySQL()
+        public String? GetPicPath()
+        {
+            if (!reader.Read())
+            {
+                return null;
+            }
+            //String picPath = reader.GetString(1);
+            //picPath += reader.GetString(0);
+            return reader.GetString(1) + reader.GetString(0);
+        }
+
+        private void ConnectMySQL()
         {          
             try
             {
                 conn.Open();
-                MessageBox.Show("已经建立连接");
+                //MessageBox.Show("已经建立连接");
             }
             catch (Exception)
             {
-                MessageBox.Show("连接失败");
+                MessageBox.Show("连接MySQL失败!");               
             }
-            conn.Close();
         }
 
         static String GetLoginStr()
@@ -46,6 +68,11 @@ namespace ModsExplorer
                 throw new Exception("读不出东西!");
             }
             return reStr;
+        }
+
+        public void close()
+        {
+            conn.Close();
         }
     }
 }

@@ -187,7 +187,7 @@ void FileMD5Thread::initializeFileTypeMap(void)
     }
     map<string, FileMD5Thread::FileType>* fileTypeMap=new map<string, FileMD5Thread::FileType>;//申请堆内存
     char* modsExtensionName[] = { "ttmp2","ttmp" };
-    char* picsExtensionName[] = { "jpg","png","gif","bmp","PNG","webp" };
+    char* picsExtensionName[] = { "jpg","png","gif","bmp","PNG" };
     int i;
     for (i = 0; i < sizeof(modsExtensionName) / sizeof(char*); i++) {
         fileTypeMap->insert(pair<string, FileType>(modsExtensionName[i], FileType::MOD));
