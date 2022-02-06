@@ -9,8 +9,7 @@ namespace ModsExplorer
         {
             InitializeComponent();
             
-            modsPreviewPics=new ModsPreviewPics(this);
-            
+            modsPreviewPics=new ModsPreviewPics(this);            
             //
             /*
             CallMySQL callMySQL=new CallMySQL();
@@ -19,12 +18,12 @@ namespace ModsExplorer
             MessageBox.Show(callMySQL.GetPicPath());
             MessageBox.Show(callMySQL.GetPicPath());
             */
-
         }       
 
         private void Home_SizeChanged(object sender, EventArgs e)
         {
             modsPreviewPics.AlterMultPicBox();
+            FixControler();
             //pictureBox1
             this.Text=String.Format("{0},{1},{2}",this.Width,this.Height, this.AutoScrollPosition.Y);
         }
@@ -48,12 +47,16 @@ namespace ModsExplorer
 
         private void Home_MouseWheel(object sender, MouseEventArgs e)
         {   //鼠标滚动事件
-            this.btmPanel1.Top = 49;
-            this.topPictureBox1.Top = 0;
+            FixControler();
             this.Text = String.Format("{0},{1},{2}", btmPanel1.Top, btmPanel1.Location.Y.ToString(), this.AutoScrollPosition.Y);
         }
 
         private void Home_Scroll(object sender, ScrollEventArgs e)
+        {
+            FixControler();
+        }
+
+        void FixControler()
         {
             this.btmPanel1.Top = 49;
             this.topPictureBox1.Top = 0;
