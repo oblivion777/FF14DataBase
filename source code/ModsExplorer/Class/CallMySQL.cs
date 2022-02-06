@@ -10,29 +10,36 @@ namespace ModsExplorer
     internal class CallMySQL
     {
         MySqlConnection conn;
-        MySqlCommand selectPicsPath;
-        MySqlDataReader reader;
-
+        public MySqlCommand selectPicsPath;
+        public MySqlDataReader reader;
+        int picsIndex = 0;
 #pragma warning disable CS8618 // 在退出构造函数时，不可为 null 的字段必须包含非 null 值。请考虑声明为可以为 null。
-        public CallMySQL()
+        public CallMySQL():this(GetLoginStr())
         {
-            conn = new MySqlConnection(GetLoginStr());
-            ConnectMySQL();
+            
         }
 
         public CallMySQL(String conStr)
         {
             conn = new MySqlConnection(conStr);
             ConnectMySQL();
+
+            selectPicsPath = new MySqlCommand("SELECT filename,path FROM preview_pics LIMIT 100,100", conn);
         }
 #pragma warning restore CS8618 // 在退出构造函数时，不可为 null 的字段必须包含非 null 值。请考虑声明为可以为 null。
-        public void SelectPicsPath()
-        { 
-            String sql = "SELECT filename,path FROM preview_pics LIMIT 200,100";
-            selectPicsPath=new MySqlCommand(sql,conn);
+        public void SelectLastPicsPath()
+        {
+            String sql = String.Format("SELECT filename,path FROM preview_pics LIMIT {0},{1}", setPicsIndex(-1), 100);
+            selectPicsPath.CommandText = sql;
             reader = selectPicsPath.ExecuteReader();
         }
 
+        public void SelectNextPicsPath()
+        {
+            String sql = String.Format("SELECT filename,path FROM preview_pics LIMIT {0},{1}", setPicsIndex(1), 100);
+            selectPicsPath.CommandText = sql;
+            reader = selectPicsPath.ExecuteReader();
+        }
         public String? GetPicPath()
         {
             if (!reader.Read())
@@ -68,6 +75,33 @@ namespace ModsExplorer
                 throw new Exception("读不出东西!");
             }
             return reStr;
+        }
+
+        public int setPicsIndex(int mode = 0, int increment = 100)
+        {
+            switch (mode)
+            {
+                case 0:
+                    {
+                        return picsIndex;
+                    }
+                case 1:
+                    {
+                        picsIndex += increment;
+                        return picsIndex;
+                    }
+                case -1:
+                    {
+                        picsIndex -= increment;
+                        if (picsIndex < 0)
+                        { picsIndex = 0; }
+                        return picsIndex;
+                    }
+                default:
+                    {
+                        throw (new Exception("别乱搞!"));
+                    }
+            }
         }
 
         public void close()

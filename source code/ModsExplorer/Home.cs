@@ -5,7 +5,6 @@ namespace ModsExplorer
     {
         ModsPreviewPics modsPreviewPics;
 
-
         public Home()
         {
             InitializeComponent();
@@ -37,6 +36,28 @@ namespace ModsExplorer
 
         }
 
+        private void lastPage_Click(object sender, EventArgs e)
+        {
+            modsPreviewPics.UpdateMultPicBox(ModsPreviewPics.Operate.LAST);
+        }
+
+        private void nextPage_Click(object sender, EventArgs e)
+        {
+            modsPreviewPics.UpdateMultPicBox(ModsPreviewPics.Operate.NEXT);
+        }
+
+        private void Home_MouseWheel(object sender, MouseEventArgs e)
+        {   //鼠标滚动事件
+            this.btmPanel1.Top = 49;
+            this.topPictureBox1.Top = 0;
+            this.Text = String.Format("{0},{1},{2}", btmPanel1.Top, btmPanel1.Location.Y.ToString(), this.AutoScrollPosition.Y);
+        }
+
+        private void Home_Scroll(object sender, ScrollEventArgs e)
+        {
+            this.btmPanel1.Top = 49;
+            this.topPictureBox1.Top = 0;
+        }
     }
 
 

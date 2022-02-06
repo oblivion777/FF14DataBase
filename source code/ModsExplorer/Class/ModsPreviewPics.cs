@@ -16,30 +16,27 @@ namespace ModsExplorer
         int previewImagesCount = 100;       //显示图片总数
         int picsRow;                        //列
         CallMySQL readPicsPath = new CallMySQL();
+        public enum Operate
+        {
+            NONE,LAST,NEXT
+        }
         public ModsPreviewPics(Home hObj)
         {
             homeWinForn = hObj;
             multPicBoxes = new PictureBox[previewImagesCount];
             calcRow();
-            readPicsPath.SelectPicsPath();
+            readPicsPath.SelectLastPicsPath();
 
-            CreateMultPicBox();
-            
+            CreateMultPicBox();         
         }
         //批量生成图片框
         private void CreateMultPicBox()
         {
-
             //string picPath = "F:/FF14PrintScreen/wheat field_002.jpg";
             string picPath;
             for (int i = 0; i < previewImagesCount; i++)
             {
-#pragma warning disable CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
-                if ((picPath = readPicsPath.GetPicPath()) == null)
-#pragma warning restore CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
-                {
-                    break;
-                }
+
                 multPicBoxes[i] = new System.Windows.Forms.PictureBox()
                 {
                     Anchor = AnchorStyles.Right | AnchorStyles.Top,
@@ -53,12 +50,61 @@ namespace ModsExplorer
                     TabStop = false,
                     Parent = homeWinForn,
                 };
-
-                multPicBoxes[i].Image = Image.FromFile(picPath);
-
+#pragma warning disable CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
+                picPath = readPicsPath.GetPicPath();
+                if (picPath == null)
+#pragma warning restore CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
+                {
+                    multPicBoxes[i].Image = null;
+                    continue;
+                }
+                else
+                {
+                    multPicBoxes[i].Image = Image.FromFile(picPath);
+                }                         
             }
-            //return multPicBoxes;
+            readPicsPath.reader.Close();
         }
+
+        //批量更新图片
+        public void UpdateMultPicBox(Operate action)
+        {
+            string picPath;
+            switch (action)
+            {
+                case Operate.LAST:
+                    {
+                        readPicsPath.SelectLastPicsPath();
+                        break;
+                    }
+                case Operate.NEXT:
+                    {
+                        readPicsPath.SelectNextPicsPath();
+                        break;
+                    }
+                default: throw (new Exception("别搞事!"));
+            }
+            for (int i = 0; i < previewImagesCount; i++)
+            {
+#pragma warning disable CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
+                picPath = readPicsPath.GetPicPath();
+                if (picPath == null)
+#pragma warning restore CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
+                {
+                    multPicBoxes[i].Image = null;
+                    continue;
+                }
+                else
+                {
+                    multPicBoxes[i].Image = Image.FromFile(picPath);
+                }               
+            }
+            readPicsPath.reader.Close();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+        }
+
+
 
         //用于改变窗体时调整图片框位置
         public void AlterMultPicBox()
@@ -71,7 +117,7 @@ namespace ModsExplorer
             }
         }
 
-        /*横向图片位置*/
+        /*图片横坐标*/
         int picLocationX(int i)
         {        
             if (picsRow <= 1)
@@ -80,16 +126,17 @@ namespace ModsExplorer
             }
             return (picSizeX + 5) * (i % picsRow) + homeWinForn.picsGroupBox1.Location.X;
         }
-        /*纵向图片位置*/
+        /*图片纵坐标*/
         int picLocationY(int i)
         {       
             if (picsRow <= 1)
             {
                 picsRow = 1;
             }
+            /*行数=i÷列数的商(舍去余数)*/
             return (20 + (i / picsRow) * (picSizeY + 7));
         }
-
+        //计算列数
         int calcRow()
         {
             picsRow = (homeWinForn.Width - 200) / picSizeX;//列
