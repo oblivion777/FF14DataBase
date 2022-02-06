@@ -41,7 +41,7 @@
             this.picsGroupBox1.Location = new System.Drawing.Point(165, 49);
             this.picsGroupBox1.Margin = new System.Windows.Forms.Padding(3, 40, 3, 3);
             this.picsGroupBox1.Name = "picsGroupBox1";
-            this.picsGroupBox1.Size = new System.Drawing.Size(687, 706);
+            this.picsGroupBox1.Size = new System.Drawing.Size(670, 706);
             this.picsGroupBox1.TabIndex = 0;
             this.picsGroupBox1.TabStop = false;
             this.picsGroupBox1.Visible = false;
@@ -69,15 +69,13 @@
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Home_Load);
             this.SizeChanged += new System.EventHandler(this.Home_SizeChanged);
-            
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        private GroupBox picsGroupBox1;
         private PictureBox pictureBox1;
+        internal GroupBox picsGroupBox1;
     }
 }
