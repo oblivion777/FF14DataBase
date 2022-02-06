@@ -37,12 +37,12 @@ namespace ModsExplorer
         }
 
         private void lastPage_Click(object sender, EventArgs e)
-        {
+        {   //上一页
             modsPreviewPics.UpdateMultPicBox(ModsPreviewPics.Operate.LAST);
         }
 
         private void nextPage_Click(object sender, EventArgs e)
-        {
+        {   //下一页
             modsPreviewPics.UpdateMultPicBox(ModsPreviewPics.Operate.NEXT);
         }
 

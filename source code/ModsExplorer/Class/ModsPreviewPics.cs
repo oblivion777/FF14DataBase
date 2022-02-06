@@ -13,7 +13,7 @@ namespace ModsExplorer
         private PictureBox[] multPicBoxes;  //图片框对象数组
         int picSizeX = 200;                 //单张图片横轴像素
         int picSizeY = 100;                 //单张图片纵轴像素
-        int previewImagesCount = 100;       //显示图片总数
+        static int previewImagesCount = 100;       //显示图片总数
         int picsRow;                        //列
         CallMySQL readPicsPath = new CallMySQL();
         public enum Operate
@@ -63,7 +63,7 @@ namespace ModsExplorer
                     multPicBoxes[i].Image = Image.FromFile(picPath);
                 }                         
             }
-            readPicsPath.reader.Close();
+            readPicsPath.CloseReader();
         }
 
         //批量更新图片
@@ -99,12 +99,10 @@ namespace ModsExplorer
                     multPicBoxes[i].Image = Image.FromFile(picPath);
                 }               
             }
-            readPicsPath.reader.Close();
+            readPicsPath.CloseReader();
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }
-
-
 
         //用于改变窗体时调整图片框位置
         public void AlterMultPicBox()
@@ -141,6 +139,11 @@ namespace ModsExplorer
         {
             picsRow = (homeWinForn.Width - 200) / picSizeX;//列
             return picsRow;
+        }
+
+        public static int GetPreviewImagesCount()
+        {
+            return previewImagesCount;
         }
     }
 }
