@@ -16,7 +16,7 @@ namespace ModsExplorer
         static int previewImagesCount = 100;    //显示图片总数
         int picsRow;                            //列
         private Label[] modsNameLabels;         //Label
-        CallMySQL readPicsPath = new CallMySQL();
+        CallMySQL readerModsInfo = new CallMySQL();
         public enum Operate
         {
             NONE,LAST,NEXT
@@ -27,7 +27,7 @@ namespace ModsExplorer
             multPicBoxes = new PictureBox[previewImagesCount];
             modsNameLabels=new Label[previewImagesCount];
             calcRow();
-            readPicsPath.SelectLastPicsPath();
+            readerModsInfo.SelectLastPicsPath();
 
             CreateMultPicBox();
             CreateModsNameLabels();
@@ -54,7 +54,7 @@ namespace ModsExplorer
                     Parent = homeWinForn,
                 };
 #pragma warning disable CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
-                modInfo = readPicsPath.GetModInfo();
+                modInfo = readerModsInfo.GetModInfo();
                 if (modInfo.picPath == null)
 #pragma warning restore CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
                 {
@@ -66,7 +66,7 @@ namespace ModsExplorer
                     multPicBoxes[i].Image = Image.FromFile(modInfo.picPath);
                 }                         
             }
-            readPicsPath.CloseReader();
+            readerModsInfo.CloseReader();
         }
 
         //批量更新图片
@@ -77,12 +77,12 @@ namespace ModsExplorer
             {
                 case Operate.LAST:
                     {
-                        readPicsPath.SelectLastPicsPath();
+                        readerModsInfo.SelectLastPicsPath();
                         break;
                     }
                 case Operate.NEXT:
                     {
-                        readPicsPath.SelectNextPicsPath();
+                        readerModsInfo.SelectNextPicsPath();
                         break;
                     }
                 default: throw (new Exception("别搞事!"));
@@ -90,7 +90,7 @@ namespace ModsExplorer
             for (int i = 0; i < previewImagesCount; i++)
             {
 #pragma warning disable CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
-                modInfo = readPicsPath.GetModInfo();
+                modInfo = readerModsInfo.GetModInfo();
                 if (modInfo.picPath == null)
 #pragma warning restore CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
                 {
@@ -100,9 +100,10 @@ namespace ModsExplorer
                 else
                 {
                     multPicBoxes[i].Image = Image.FromFile(modInfo.picPath);
+                    modsNameLabels[i].Text = modInfo.name;
                 }               
             }
-            readPicsPath.CloseReader();
+            readerModsInfo.CloseReader();
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }
@@ -157,8 +158,11 @@ namespace ModsExplorer
         /*=====================================================================*/
         void CreateModsNameLabels()
         {
+            CallMySQL.ModInfo modInfo;
+            readerModsInfo.SelectLastPicsPath(0);
             for (int i = 0; i < previewImagesCount; i++)
             {
+                modInfo = readerModsInfo.GetModInfo();
                 modsNameLabels[i] = new Label()
                 {
                     Location = new System.Drawing.Point(0, 0),
@@ -166,11 +170,12 @@ namespace ModsExplorer
                     Size = new System.Drawing.Size(picSizeX, INTERVAL),
                     TabIndex = 0,
                     TabStop = false,
-                    Text = "labe342ASDADFASDFWERWERQWER4324SDFl1\r\ntest\r\ntest\r\ntest\r\n",
+                    Text = modInfo.name,
                     TextAlign = System.Drawing.ContentAlignment.TopCenter,
                     Parent = homeWinForn,
-                };
+                };            
             }
+            readerModsInfo.CloseReader();
         }
 
     }

@@ -29,10 +29,10 @@ namespace ModsExplorer
             selectPicsPath = new MySqlCommand("SELECT filename,path FROM preview_pics LIMIT 0,100", conn);
         }
 #pragma warning restore CS8618 // 在退出构造函数时，不可为 null 的字段必须包含非 null 值。请考虑声明为可以为 null。
-        public void SelectLastPicsPath()
+        public void SelectLastPicsPath(int mode = -1)
         {
-            String sql = String.Format("SELECT filename,path FROM preview_pics LIMIT {0},{1}", 
-                setPicsIndex(-1), ModsPreviewPics.GetPreviewImagesCount());
+            String sql = String.Format("SELECT filename,path FROM preview_pics LIMIT {0},{1}",
+                setPicsIndex(mode), ModsPreviewPics.GetPreviewImagesCount());
             selectPicsPath.CommandText = sql;
             reader = selectPicsPath.ExecuteReader();
         }
@@ -60,6 +60,7 @@ namespace ModsExplorer
                 return modInfo;
             }           
             modInfo.picPath = reader.GetString(1) + reader.GetString(0);
+            modInfo.name = reader.GetString(0);
 
             return modInfo;
         }
