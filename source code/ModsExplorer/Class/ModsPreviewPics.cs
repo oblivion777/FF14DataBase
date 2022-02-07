@@ -36,7 +36,7 @@ namespace ModsExplorer
         private void CreateMultPicBox()
         {
             //string picPath = "F:/FF14PrintScreen/wheat field_002.jpg";
-            string picPath;
+            CallMySQL.ModInfo modInfo;
             for (int i = 0; i < previewImagesCount; i++)
             {
 
@@ -54,8 +54,8 @@ namespace ModsExplorer
                     Parent = homeWinForn,
                 };
 #pragma warning disable CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
-                picPath = readPicsPath.GetPicPath();
-                if (picPath == null)
+                modInfo = readPicsPath.GetModInfo();
+                if (modInfo.picPath == null)
 #pragma warning restore CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
                 {
                     multPicBoxes[i].Image = null;
@@ -63,7 +63,7 @@ namespace ModsExplorer
                 }
                 else
                 {
-                    multPicBoxes[i].Image = Image.FromFile(picPath);
+                    multPicBoxes[i].Image = Image.FromFile(modInfo.picPath);
                 }                         
             }
             readPicsPath.CloseReader();
@@ -72,7 +72,7 @@ namespace ModsExplorer
         //批量更新图片
         public void UpdateMultPicBox(Operate action)
         {
-            string picPath;
+            CallMySQL.ModInfo modInfo;
             switch (action)
             {
                 case Operate.LAST:
@@ -90,8 +90,8 @@ namespace ModsExplorer
             for (int i = 0; i < previewImagesCount; i++)
             {
 #pragma warning disable CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
-                picPath = readPicsPath.GetPicPath();
-                if (picPath == null)
+                modInfo = readPicsPath.GetModInfo();
+                if (modInfo.picPath == null)
 #pragma warning restore CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
                 {
                     multPicBoxes[i].Image = null;
@@ -99,7 +99,7 @@ namespace ModsExplorer
                 }
                 else
                 {
-                    multPicBoxes[i].Image = Image.FromFile(picPath);
+                    multPicBoxes[i].Image = Image.FromFile(modInfo.picPath);
                 }               
             }
             readPicsPath.CloseReader();

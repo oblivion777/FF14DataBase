@@ -44,16 +44,24 @@ namespace ModsExplorer
             selectPicsPath.CommandText = sql;
             reader = selectPicsPath.ExecuteReader();
         }
-        public String? GetPicPath()
+
+        public struct ModInfo
         {
+            public string name;
+            public string path;
+            public string? picPath;
+        }
+        public ModInfo GetModInfo()
+        {
+            ModInfo modInfo = new();
             if (!reader.Read())
             {
-                //CloseReader();
-                return null;
-            }
-            //String picPath = reader.GetString(1);
-            //picPath += reader.GetString(0);
-            return reader.GetString(1) + reader.GetString(0);
+                modInfo.picPath = null;
+                return modInfo;
+            }           
+            modInfo.picPath = reader.GetString(1) + reader.GetString(0);
+
+            return modInfo;
         }
 
         private void ConnectMySQL()
