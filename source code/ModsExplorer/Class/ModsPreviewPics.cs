@@ -9,12 +9,13 @@ namespace ModsExplorer
     internal class ModsPreviewPics
     {
 
-        Home homeWinForn;                   //主窗体对象
-        private PictureBox[] multPicBoxes;  //图片框对象数组
-        int picSizeX = 200;                 //单张图片横轴像素
-        int picSizeY = 100;                 //单张图片纵轴像素
-        static int previewImagesCount = 100;       //显示图片总数
-        int picsRow;                        //列
+        Home homeWinForn;                       //主窗体对象
+        private PictureBox[] multPicBoxes;      //图片框对象数组
+        int picSizeX = 200;                     //单张图片横轴像素
+        int picSizeY = 100;                     //单张图片纵轴像素
+        static int previewImagesCount = 100;    //显示图片总数
+        int picsRow;                            //列
+        private Label[] modsNameLabels;         //Label
         CallMySQL readPicsPath = new CallMySQL();
         public enum Operate
         {
@@ -24,10 +25,12 @@ namespace ModsExplorer
         {
             homeWinForn = hObj;
             multPicBoxes = new PictureBox[previewImagesCount];
+            modsNameLabels=new Label[previewImagesCount];
             calcRow();
             readPicsPath.SelectLastPicsPath();
 
-            CreateMultPicBox();         
+            CreateMultPicBox();
+            CreateModsNameLabels();
         }
         //批量生成图片框
         private void CreateMultPicBox()
@@ -39,7 +42,7 @@ namespace ModsExplorer
 
                 multPicBoxes[i] = new System.Windows.Forms.PictureBox()
                 {
-                    Anchor = AnchorStyles.Right | AnchorStyles.Top,
+                    //Anchor = AnchorStyles.Left | AnchorStyles.Top,
                     BackgroundImageLayout = ImageLayout.None,
                     BorderStyle = BorderStyle.FixedSingle,
                     Location = new Point(picLocationX(i), picLocationY(i)),
@@ -109,9 +112,12 @@ namespace ModsExplorer
         {
             calcRow();
             for (int i = 0; i < multPicBoxes.GetLength(0); i++)
-            {
+            {   //调整图片框
                 multPicBoxes[i].Left = picLocationX(i);
                 multPicBoxes[i].Top = picLocationY(i) + homeWinForn.picsGroupBox1.Location.Y;
+                //调整label
+                modsNameLabels[i].Left = multPicBoxes[i].Location.X;
+                modsNameLabels[i].Top = multPicBoxes[i].Location.Y + picSizeY;
             }
         }
 
@@ -125,14 +131,16 @@ namespace ModsExplorer
             return (picSizeX + 5) * (i % picsRow) + homeWinForn.picsGroupBox1.Location.X;
         }
         /*图片纵坐标*/
+        const int INTERVAL = 60;     //间距
         int picLocationY(int i)
-        {       
+        {
+
             if (picsRow <= 1)
             {
                 picsRow = 1;
             }
             /*行数=i÷列数的商(舍去余数)*/
-            return (20 + (i / picsRow) * (picSizeY + 7));
+            return (20 + (i / picsRow) * (picSizeY + INTERVAL));
         }
         //计算列数
         int calcRow()
@@ -145,5 +153,25 @@ namespace ModsExplorer
         {
             return previewImagesCount;
         }
+
+        /*=====================================================================*/
+        void CreateModsNameLabels()
+        {
+            for (int i = 0; i < previewImagesCount; i++)
+            {
+                modsNameLabels[i] = new Label()
+                {
+                    Location = new System.Drawing.Point(0, 0),
+                    Name = ("modsNameLabel" + i.ToString()),
+                    Size = new System.Drawing.Size(picSizeX, INTERVAL),
+                    TabIndex = 0,
+                    TabStop = false,
+                    Text = "labe342ASDADFASDFWERWERQWER4324SDFl1\r\ntest\r\ntest\r\ntest\r\n",
+                    TextAlign = System.Drawing.ContentAlignment.TopCenter,
+                    Parent = homeWinForn,
+                };
+            }
+        }
+
     }
 }

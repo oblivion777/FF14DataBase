@@ -23,16 +23,17 @@ namespace ModsExplorer
         private void Home_SizeChanged(object sender, EventArgs e)
         {
             modsPreviewPics.AlterMultPicBox();
-            FixControler();
+            FixLeftSideControler();
             //pictureBox1
-            this.Text=String.Format("{0},{1},{2}",this.Width,this.Height, this.AutoScrollPosition.Y);
+            this.labelTest.Text = String.Format("{0},{1},{2}", this.Width, this.Height, this.AutoScrollPosition.Y);
         }
 
 
 
         private void Home_Load(object sender, EventArgs e)
         {
-
+            modsPreviewPics.AlterMultPicBox();
+            this.labelTest.Text = String.Format("{0},{1},\n{2}", this.Width, this.Height, this.AutoScrollPosition.Y);
         }
 
         private void lastPage_Click(object sender, EventArgs e)
@@ -47,16 +48,16 @@ namespace ModsExplorer
 
         private void Home_MouseWheel(object sender, MouseEventArgs e)
         {   //鼠标滚动事件
-            FixControler();
+            FixLeftSideControler();
             this.Text = String.Format("{0},{1},{2}", btmPanel1.Top, btmPanel1.Location.Y.ToString(), this.AutoScrollPosition.Y);
         }
 
         private void Home_Scroll(object sender, ScrollEventArgs e)
         {
-            FixControler();
+            FixLeftSideControler();
         }
 
-        void FixControler()
+        void FixLeftSideControler()
         {
             this.btmPanel1.Top = 49;
             this.topPictureBox1.Top = 0;

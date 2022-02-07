@@ -33,6 +33,7 @@
             this.lastPage = new System.Windows.Forms.Button();
             this.nextPage = new System.Windows.Forms.Button();
             this.btmPanel1 = new System.Windows.Forms.Panel();
+            this.labelTest = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.topPictureBox1)).BeginInit();
             this.btmPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -45,7 +46,7 @@
             this.picsGroupBox1.Location = new System.Drawing.Point(165, 49);
             this.picsGroupBox1.Margin = new System.Windows.Forms.Padding(3, 40, 3, 3);
             this.picsGroupBox1.Name = "picsGroupBox1";
-            this.picsGroupBox1.Size = new System.Drawing.Size(423, 566);
+            this.picsGroupBox1.Size = new System.Drawing.Size(559, 250);
             this.picsGroupBox1.TabIndex = 0;
             this.picsGroupBox1.TabStop = false;
             this.picsGroupBox1.Visible = false;
@@ -83,12 +84,22 @@
             // 
             // btmPanel1
             // 
+            this.btmPanel1.Controls.Add(this.labelTest);
             this.btmPanel1.Controls.Add(this.nextPage);
             this.btmPanel1.Controls.Add(this.lastPage);
             this.btmPanel1.Location = new System.Drawing.Point(0, 49);
             this.btmPanel1.Name = "btmPanel1";
             this.btmPanel1.Size = new System.Drawing.Size(159, 250);
             this.btmPanel1.TabIndex = 5;
+            // 
+            // labelTest
+            // 
+            this.labelTest.Location = new System.Drawing.Point(3, 96);
+            this.labelTest.Name = "labelTest";
+            this.labelTest.Size = new System.Drawing.Size(143, 89);
+            this.labelTest.TabIndex = 6;
+            this.labelTest.Text = "label1\r\ntest\r\n";
+            this.labelTest.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // Home
             // 
@@ -105,7 +116,6 @@
             this.Load += new System.EventHandler(this.Home_Load);
             this.Scroll += new System.Windows.Forms.ScrollEventHandler(this.Home_Scroll);
             this.SizeChanged += new System.EventHandler(this.Home_SizeChanged);
-
             this.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Home_MouseWheel);
             ((System.ComponentModel.ISupportInitialize)(this.topPictureBox1)).EndInit();
             this.btmPanel1.ResumeLayout(false);
@@ -119,6 +129,6 @@
         private Button lastPage;
         private Button nextPage;
         private Panel btmPanel1;
-
+        private Label labelTest;
     }
 }

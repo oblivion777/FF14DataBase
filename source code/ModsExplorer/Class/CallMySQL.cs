@@ -25,7 +25,7 @@ namespace ModsExplorer
         {
             conn = new MySqlConnection(conStr);
             ConnectMySQL();
-
+            //用于执行MySQL查询语句的对象
             selectPicsPath = new MySqlCommand("SELECT filename,path FROM preview_pics LIMIT 0,100", conn);
         }
 #pragma warning restore CS8618 // 在退出构造函数时，不可为 null 的字段必须包含非 null 值。请考虑声明为可以为 null。
@@ -48,6 +48,7 @@ namespace ModsExplorer
         {
             if (!reader.Read())
             {
+                //CloseReader();
                 return null;
             }
             //String picPath = reader.GetString(1);
@@ -105,7 +106,8 @@ namespace ModsExplorer
                     }
                 default:
                     {
-                        throw (new Exception("别乱搞!"));
+                        return picsIndex;
+                        //throw (new Exception("别乱搞!"));
                     }
             }
         }
