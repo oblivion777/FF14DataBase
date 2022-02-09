@@ -7,38 +7,46 @@ namespace ModsExplorer
 
         public Home()
         {
+            CheckForIllegalCrossThreadCalls = false;
             InitializeComponent();           
             modsPreviewPics=new ModsPreviewPics(this);
-            CheckForIllegalCrossThreadCalls = false;
-        }       
-
-        private void Home_SizeChanged(object sender, EventArgs e)
-        {
-            modsPreviewPics.AlterMultPicBox();
-            this.labelTest.Text = String.Format("{0}", this.panelPicsBox1.AutoScrollPosition.Y);
             
-            //FixLeftSideControler();
-            //pictureBox1         
+            
         }
-
-
 
         private void Home_Load(object sender, EventArgs e)
         {
             modsPreviewPics.AlterMultPicBox();
-            modsPreviewPics.UpdateMultPicBox(ModsPreviewPics.Operate.LAST);
+            modsPreviewPics.UpdateControls(ModsPreviewPics.Operate.LAST);
+            SetLabelTest();
+        }
+
+        private void Home_SizeChanged(object sender, EventArgs e)
+        {
+            modsPreviewPics.AlterMultPicBox();
+            //this.labelTest.Text = String.Format("{0}", this.panelPicsBox1.AutoScrollPosition.Y);
+
+
+            //FixLeftSideControler();
+            //pictureBox1         
         }
 
         private void lastPage_Click(object sender, EventArgs e)
         {   //上一页
-            modsPreviewPics.UpdateMultPicBox(ModsPreviewPics.Operate.LAST);
+            modsPreviewPics.UpdateControls(ModsPreviewPics.Operate.LAST);
             panelPicsBox1.AutoScrollPosition = new Point(0, 0);
+            SetLabelTest();
         }
 
         private void nextPage_Click(object sender, EventArgs e)
         {   //下一页
-            modsPreviewPics.UpdateMultPicBox(ModsPreviewPics.Operate.NEXT);
+            if (modsPreviewPics.readerModsInfo.GetPicsIndex() == modsPreviewPics.readerModsInfo.GetCountRow())
+            {
+                return;
+            }
+            modsPreviewPics.UpdateControls(ModsPreviewPics.Operate.NEXT);
             panelPicsBox1.AutoScrollPosition = new Point(0, 0);
+            SetLabelTest();
         }
 
         private void Home_MouseWheel(object sender, MouseEventArgs e)
@@ -51,10 +59,10 @@ namespace ModsExplorer
             //FixLeftSideControler();
         }
 
-        void FixLeftSideControler()
+        void SetLabelTest()
         {
-            this.btmPanel1.Top = 49;
-            this.topPictureBox1.Top = 0;
+            labelTest.Text = modsPreviewPics.readerModsInfo.GetPicsIndex().ToString() + '/' +
+                modsPreviewPics.readerModsInfo.GetCountRow().ToString();
         }
     }
 

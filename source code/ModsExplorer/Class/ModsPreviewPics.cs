@@ -16,7 +16,7 @@ namespace ModsExplorer
         static int previewImagesCount = 100;    //显示图片总数
         int picsRow;                            //列
         private Label[] modsNameLabels;         //Label
-        CallMySQL readerModsInfo = new CallMySQL();
+        internal CallMySQL readerModsInfo = new CallMySQL();
 
         Thread[] threads = new Thread[previewImagesCount];//线程池   
         public enum Operate
@@ -58,7 +58,7 @@ namespace ModsExplorer
         }
 
         //批量更新图片和mod文件名
-        public void UpdateMultPicBox(Operate action)
+        public void UpdateControls(Operate action)
         {
             CallMySQL.ModInfo modInfo;         
             switch (action)
@@ -165,10 +165,10 @@ namespace ModsExplorer
         Label modsNameLabels;
         CallMySQL.ModInfo modInfo;
         public UpdatePicsThread(PictureBox pictureBox, Label label, CallMySQL.ModInfo modInfo)
-        {           
-            multPicBoxes =pictureBox;
-            modsNameLabels=label;
-            this.modInfo=modInfo;
+        {
+            multPicBoxes = pictureBox;
+            modsNameLabels = label;
+            this.modInfo = modInfo;
         }
 
         public void RunThread()
@@ -183,6 +183,12 @@ namespace ModsExplorer
             {
                 multPicBoxes.Image = null;
             }
+            if(modInfo.name == null)
+            {
+                modsNameLabels.Text = null;
+                return;
+            }
+            modInfo.name = modInfo.name.Substring(0, modInfo.name.LastIndexOf('.'));
             modsNameLabels.Text = modInfo.name;//更新mod名
 
         }
