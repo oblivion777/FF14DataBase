@@ -28,28 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.picsGroupBox1 = new System.Windows.Forms.GroupBox();
             this.topPictureBox1 = new System.Windows.Forms.PictureBox();
             this.lastPage = new System.Windows.Forms.Button();
             this.nextPage = new System.Windows.Forms.Button();
             this.btmPanel1 = new System.Windows.Forms.Panel();
             this.labelTest = new System.Windows.Forms.Label();
+            this.panelPicsBox1 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.topPictureBox1)).BeginInit();
             this.btmPanel1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // picsGroupBox1
-            // 
-            this.picsGroupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.picsGroupBox1.BackColor = System.Drawing.SystemColors.Control;
-            this.picsGroupBox1.Location = new System.Drawing.Point(165, 49);
-            this.picsGroupBox1.Margin = new System.Windows.Forms.Padding(3, 40, 3, 3);
-            this.picsGroupBox1.Name = "picsGroupBox1";
-            this.picsGroupBox1.Size = new System.Drawing.Size(559, 250);
-            this.picsGroupBox1.TabIndex = 0;
-            this.picsGroupBox1.TabStop = false;
-            this.picsGroupBox1.Visible = false;
             // 
             // topPictureBox1
             // 
@@ -102,22 +89,32 @@
             this.labelTest.Text = "label1\r\ntest\r\n";
             this.labelTest.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
+            // panelPicsBox1
+            // 
+            this.panelPicsBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelPicsBox1.AutoScroll = true;
+            this.panelPicsBox1.Location = new System.Drawing.Point(165, 49);
+            this.panelPicsBox1.Name = "panelPicsBox1";
+            this.panelPicsBox1.Size = new System.Drawing.Size(824, 712);
+            this.panelPicsBox1.TabIndex = 6;
+            // 
             // Home
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoScroll = true;
             this.AutoScrollMargin = new System.Drawing.Size(0, 20);
             this.ClientSize = new System.Drawing.Size(988, 763);
+            this.Controls.Add(this.panelPicsBox1);
             this.Controls.Add(this.btmPanel1);
             this.Controls.Add(this.topPictureBox1);
-            this.Controls.Add(this.picsGroupBox1);
             this.Name = "Home";
             this.Text = "Form1";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.Home_Load);
             this.Scroll += new System.Windows.Forms.ScrollEventHandler(this.Home_Scroll);
             this.SizeChanged += new System.EventHandler(this.Home_SizeChanged);
-            this.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Home_MouseWheel);
             ((System.ComponentModel.ISupportInitialize)(this.topPictureBox1)).EndInit();
             this.btmPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -126,10 +123,10 @@
 
         #endregion
         private PictureBox topPictureBox1;
-        internal GroupBox picsGroupBox1;
         private Button lastPage;
         private Button nextPage;
         private Panel btmPanel1;
         private Label labelTest;
+        internal Panel panelPicsBox1;
     }
 }

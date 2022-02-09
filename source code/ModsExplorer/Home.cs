@@ -22,9 +22,10 @@ namespace ModsExplorer
         private void Home_SizeChanged(object sender, EventArgs e)
         {
             modsPreviewPics.AlterMultPicBox();
-            FixLeftSideControler();
-            //pictureBox1
-            this.labelTest.Text = String.Format("{0},{1},{2}", this.Width, this.Height, this.AutoScrollPosition.Y);
+            this.labelTest.Text = String.Format("{0}", this.panelPicsBox1.AutoScrollPosition.Y);
+            
+            //FixLeftSideControler();
+            //pictureBox1         
         }
 
 
@@ -33,29 +34,28 @@ namespace ModsExplorer
         {
             modsPreviewPics.AlterMultPicBox();
             modsPreviewPics.UpdateMultPicBox(ModsPreviewPics.Operate.LAST);
-            this.labelTest.Text = String.Format("{0},{1},\n{2}", this.Width, this.Height, this.AutoScrollPosition.Y);
         }
 
         private void lastPage_Click(object sender, EventArgs e)
         {   //上一页
             modsPreviewPics.UpdateMultPicBox(ModsPreviewPics.Operate.LAST);
-            AutoScrollPosition = new Point(0, 0);
+            panelPicsBox1.AutoScrollPosition = new Point(0, 0);
         }
 
         private void nextPage_Click(object sender, EventArgs e)
         {   //下一页
             modsPreviewPics.UpdateMultPicBox(ModsPreviewPics.Operate.NEXT);
+            panelPicsBox1.AutoScrollPosition = new Point(0, 0);
         }
 
         private void Home_MouseWheel(object sender, MouseEventArgs e)
         {   //鼠标滚动事件
-            FixLeftSideControler();
-            this.Text = String.Format("{0},{1},{2}", btmPanel1.Top, btmPanel1.Location.Y.ToString(), this.AutoScrollPosition.Y);
+            //FixLeftSideControler();           
         }
 
         private void Home_Scroll(object sender, ScrollEventArgs e)
         {
-            FixLeftSideControler();
+            //FixLeftSideControler();
         }
 
         void FixLeftSideControler()

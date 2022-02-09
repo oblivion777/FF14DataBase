@@ -49,7 +49,7 @@ namespace ModsExplorer
                     SizeMode = PictureBoxSizeMode.Zoom,
                     TabIndex = 0,
                     TabStop = false,
-                    Parent = homeWinForn,
+                    Parent = homeWinForn.panelPicsBox1,
                 };
             }
             readerModsInfo.CloseReader();
@@ -85,8 +85,8 @@ namespace ModsExplorer
                 }
                 else
                 {
-                    multPicBoxes[i].Image = Image.FromFile(modInfo.picPath);
-                    modsNameLabels[i].Text = modInfo.name;
+                    multPicBoxes[i].Image = Image.FromFile(modInfo.picPath);//更新图片对象
+                    modsNameLabels[i].Text = modInfo.name;//更新mod名
                 }               
             }
             readerModsInfo.CloseReader();
@@ -101,7 +101,7 @@ namespace ModsExplorer
             for (int i = 0; i < multPicBoxes.GetLength(0); i++)
             {   //调整图片框
                 multPicBoxes[i].Left = picLocationX(i);
-                multPicBoxes[i].Top = picLocationY(i) + homeWinForn.picsGroupBox1.Location.Y;
+                multPicBoxes[i].Top = picLocationY(i);
                 //调整label
                 modsNameLabels[i].Left = multPicBoxes[i].Location.X;
                 modsNameLabels[i].Top = multPicBoxes[i].Location.Y + picSizeY;
@@ -115,24 +115,23 @@ namespace ModsExplorer
             {
                 picsRow = 1;
             }
-            return (picSizeX + 5) * (i % picsRow) + homeWinForn.picsGroupBox1.Location.X;
+            return (picSizeX + 5) * (i % picsRow);
         }
         /*图片纵坐标*/
         const int INTERVAL = 60;     //间距
         int picLocationY(int i)
         {
-
             if (picsRow <= 1)
             {
                 picsRow = 1;
             }
             /*行数=i÷列数的商(舍去余数)*/
-            return (20 + (i / picsRow) * (picSizeY + INTERVAL));
+            return (20 + (i / picsRow) * (picSizeY + INTERVAL)) + homeWinForn.panelPicsBox1.AutoScrollPosition.Y;
         }
         //计算列数
         int calcRow()
         {
-            picsRow = (homeWinForn.Width - 200) / picSizeX;//列
+            picsRow = (homeWinForn.panelPicsBox1.Width - 30) / picSizeX;//列
             return picsRow;
         }
 
@@ -154,7 +153,7 @@ namespace ModsExplorer
                     TabIndex = 0,
                     TabStop = false,
                     TextAlign = System.Drawing.ContentAlignment.TopCenter,
-                    Parent = homeWinForn,
+                    Parent = homeWinForn.panelPicsBox1,
                 };            
             }
             readerModsInfo.CloseReader();
