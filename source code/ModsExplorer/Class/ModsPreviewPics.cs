@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,8 +12,8 @@ namespace ModsExplorer
 
         Home homeWinForn;                       //主窗体对象
         private PictureBox[] multPicBoxes;      //图片框对象数组
-        int picSizeX = 200;                     //单张图片横轴像素
-        int picSizeY = 100;                     //单张图片纵轴像素
+        int picSizeX = 192;                     //单张图片横轴像素
+        int picSizeY = 108;                     //单张图片纵轴像素
         static int previewImagesCount = 100;    //显示图片总数
         int picsRow;                            //列
         private Label[] modsNameLabels;         //Label
@@ -44,16 +45,23 @@ namespace ModsExplorer
                 {
                     //Anchor = AnchorStyles.Left | AnchorStyles.Top,
                     BackgroundImageLayout = ImageLayout.None,
-                    BorderStyle = BorderStyle.FixedSingle,
+                    BorderStyle = BorderStyle.None,
                     Location = new Point(picLocationX(i), picLocationY(i)),
                     Name = ("pictureBoxes" + i.ToString()),
                     Size = new Size(picSizeX, picSizeY),
                     SizeMode = PictureBoxSizeMode.Zoom,
                     TabIndex = 0,
                     TabStop = false,
+                    Cursor= Cursors.Hand,
                     Parent = homeWinForn.panelPicsBox1,
                 };
+#pragma warning disable CS8622 // 参数类型中引用类型的为 Null 性与目标委托不匹配(可能是由于为 Null 性特性)。
+                multPicBoxes[i].MouseEnter += new System.EventHandler(MultPicBoxesMouseEnter);
+                multPicBoxes[i].MouseLeave += new System.EventHandler(MultPicBoxesMouseLeave);
+                multPicBoxes[i].MouseDoubleClick += new MouseEventHandler(MultPicBoxesMouseDoubleClick);
+#pragma warning restore CS8622 // 参数类型中引用类型的为 Null 性与目标委托不匹配(可能是由于为 Null 性特性)。
             }
+
             readerModsInfo.CloseReader();
         }
 
@@ -113,7 +121,7 @@ namespace ModsExplorer
             {
                 picsRow = 1;
             }
-            return (picSizeX + 5) * (i % picsRow);
+            return (picSizeX + 10) * (i % picsRow);
         }
         /*图片纵坐标*/
         const int INTERVAL = 60;     //间距
@@ -157,6 +165,31 @@ namespace ModsExplorer
             readerModsInfo.CloseReader();
         }
 
+        void MultPicBoxesMouseEnter(object sender, EventArgs e)
+        {   //图片框鼠标进入事件
+            PictureBox picBox = (PictureBox)sender;
+            picBox.BorderStyle = BorderStyle.Fixed3D;
+        }
+
+        void MultPicBoxesMouseLeave(object sender, EventArgs e)
+        {   //图片框鼠标离开事件
+            PictureBox picBox = (PictureBox)sender;
+            picBox.BorderStyle = BorderStyle.None;
+        }
+
+        void MultPicBoxesMouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            PictureBox picBox = (PictureBox)sender;
+            //MessageBox.Show(picBox.Tag.ToString());
+            Process proc = new Process();
+            proc.StartInfo.FileName = "explorer";
+            //打开资源管理器
+#pragma warning disable CS8602 // 解引用可能出现空引用。
+            proc.StartInfo.Arguments = "/e,/select," + picBox.Tag.ToString().Replace('/','\\');
+#pragma warning restore CS8602 // 解引用可能出现空引用。
+            proc.Start();
+        }
+
     }
 
     internal class UpdatePicsThread
@@ -164,6 +197,7 @@ namespace ModsExplorer
         PictureBox multPicBoxes;
         Label modsNameLabels;
         CallMySQL.ModInfo modInfo;
+        double picW = 400;//缩略图横向分辨率
         public UpdatePicsThread(PictureBox pictureBox, Label label, CallMySQL.ModInfo modInfo)
         {
             multPicBoxes = pictureBox;
@@ -173,24 +207,33 @@ namespace ModsExplorer
 
         public void RunThread()
         {
+            Image? image;
+#pragma warning disable CS8604 // 引用类型参数可能为 null。
             try
             {
-#pragma warning disable CS8604 // 引用类型参数可能为 null。
-                multPicBoxes.Image = Image.FromFile(modInfo.picPath);//更新图片对象
-#pragma warning restore CS8604 // 引用类型参数可能为 null。
+                image = Image.FromFile(modInfo.picPath);
+                double y = image.Height * (picW / image.Width);
+                image = image.GetThumbnailImage((int)picW, (int)y, null, IntPtr.Zero);
             }
             catch (Exception)
             {
-                multPicBoxes.Image = null;
+                image = null;
             }
-            if(modInfo.name == null)
+#pragma warning restore CS8604 // 引用类型参数可能为 null。
+            multPicBoxes.Image = image; //更新图片对象
+
+            if (modInfo.name == null)
             {
                 modsNameLabels.Text = null;
-                return;
             }
-            modInfo.name = modInfo.name.Substring(0, modInfo.name.LastIndexOf('.'));
-            modsNameLabels.Text = modInfo.name;//更新mod名
-
+            else
+            {
+                multPicBoxes.Tag = modInfo.path + modInfo.name;
+                modInfo.name = modInfo.name.Substring(0, modInfo.name.LastIndexOf('.'));
+                modsNameLabels.Text = modInfo.name;//更新mod名
+            }
+            //GC.Collect();
+            //GC.WaitForPendingFinalizers();
         }
     }
 }
