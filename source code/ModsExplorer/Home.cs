@@ -8,7 +8,9 @@ namespace ModsExplorer
         public Home()
         {
             InitializeComponent();           
-            modsPreviewPics=new ModsPreviewPics(this);            
+            modsPreviewPics=new ModsPreviewPics(this);
+            CheckForIllegalCrossThreadCalls = false;
+                       
             //
             /*
             CallMySQL callMySQL=new CallMySQL();

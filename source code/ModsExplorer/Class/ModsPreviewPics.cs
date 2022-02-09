@@ -17,6 +17,8 @@ namespace ModsExplorer
         int picsRow;                            //列
         private Label[] modsNameLabels;         //Label
         CallMySQL readerModsInfo = new CallMySQL();
+
+        Thread[] threads = new Thread[previewImagesCount];//线程池   
         public enum Operate
         {
             NONE,LAST,NEXT
@@ -58,7 +60,7 @@ namespace ModsExplorer
         //批量更新图片和mod文件名
         public void UpdateMultPicBox(Operate action)
         {
-            CallMySQL.ModInfo modInfo;
+            CallMySQL.ModInfo modInfo;         
             switch (action)
             {
                 case Operate.LAST:
@@ -71,23 +73,33 @@ namespace ModsExplorer
                         readerModsInfo.SelectNextPicsPath();
                         break;
                     }
-                default: throw (new Exception("别搞事!"));
+                default: throw new Exception("别搞事!");
             }
             for (int i = 0; i < previewImagesCount; i++)
-            {
-#pragma warning disable CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
+            {               
                 modInfo = readerModsInfo.GetModInfo();
+                threads[i] = new Thread(
+                    new UpdatePicsThread(multPicBoxes[i], modsNameLabels[i], modInfo).RunThread);
+                threads[i].Start();
+                /*
+#pragma warning disable CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
                 if (modInfo.picPath == null)
 #pragma warning restore CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
                 {
                     multPicBoxes[i].Image = null;
+                    modsNameLabels[i].Text = modInfo.name;//更新mod名
                     continue;
                 }
                 else
                 {
                     multPicBoxes[i].Image = Image.FromFile(modInfo.picPath);//更新图片对象
                     modsNameLabels[i].Text = modInfo.name;//更新mod名
-                }               
+                }
+                */
+            }
+            for (int i = 0;i < threads.Length; i++)
+            {
+                threads[i].Join();
             }
             readerModsInfo.CloseReader();
             GC.Collect();
@@ -153,11 +165,41 @@ namespace ModsExplorer
                     TabIndex = 0,
                     TabStop = false,
                     TextAlign = System.Drawing.ContentAlignment.TopCenter,
-                    Parent = homeWinForn.panelPicsBox1,
-                };            
-            }
+                    Parent = homeWinForn.panelPicsBox1,                  
+                };                
+            }           
             readerModsInfo.CloseReader();
         }
 
     }
+
+    internal class UpdatePicsThread
+    {
+        PictureBox multPicBoxes;
+        Label modsNameLabels;
+        CallMySQL.ModInfo modInfo;
+        public UpdatePicsThread(PictureBox pictureBox, Label label, CallMySQL.ModInfo modInfo)
+        {           
+            multPicBoxes =pictureBox;
+            modsNameLabels=label;
+            this.modInfo=modInfo;
+        }
+
+        public void RunThread()
+        {
+#pragma warning disable CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
+            if (modInfo.picPath == null)
+            {
+                multPicBoxes.Image = null;
+            }
+            else
+            {
+                multPicBoxes.Image = Image.FromFile(modInfo.picPath);//更新图片对象
+            }
+#pragma warning restore CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
+            modsNameLabels.Text = modInfo.name;//更新mod名
+
+        }
+    }
 }
+
