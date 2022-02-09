@@ -35,8 +35,6 @@ namespace ModsExplorer
         //批量生成图片框
         private void CreateMultPicBox()
         {
-            //string picPath = "F:/FF14PrintScreen/wheat field_002.jpg";
-            CallMySQL.ModInfo modInfo;
             for (int i = 0; i < previewImagesCount; i++)
             {
 
@@ -53,23 +51,11 @@ namespace ModsExplorer
                     TabStop = false,
                     Parent = homeWinForn,
                 };
-#pragma warning disable CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
-                modInfo = readerModsInfo.GetModInfo();
-                if (modInfo.picPath == null)
-#pragma warning restore CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
-                {
-                    multPicBoxes[i].Image = null;
-                    continue;
-                }
-                else
-                {
-                    multPicBoxes[i].Image = Image.FromFile(modInfo.picPath);
-                }                         
             }
             readerModsInfo.CloseReader();
         }
 
-        //批量更新图片
+        //批量更新图片和mod文件名
         public void UpdateMultPicBox(Operate action)
         {
             CallMySQL.ModInfo modInfo;
@@ -158,11 +144,8 @@ namespace ModsExplorer
         /*=====================================================================*/
         void CreateModsNameLabels()
         {
-            CallMySQL.ModInfo modInfo;
-            readerModsInfo.SelectLastPicsPath(0);
             for (int i = 0; i < previewImagesCount; i++)
             {
-                modInfo = readerModsInfo.GetModInfo();
                 modsNameLabels[i] = new Label()
                 {
                     Location = new System.Drawing.Point(0, 0),
@@ -170,7 +153,6 @@ namespace ModsExplorer
                     Size = new System.Drawing.Size(picSizeX, INTERVAL),
                     TabIndex = 0,
                     TabStop = false,
-                    Text = modInfo.name,
                     TextAlign = System.Drawing.ContentAlignment.TopCenter,
                     Parent = homeWinForn,
                 };            

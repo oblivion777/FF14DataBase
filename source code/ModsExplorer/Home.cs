@@ -7,8 +7,7 @@ namespace ModsExplorer
 
         public Home()
         {
-            InitializeComponent();
-            
+            InitializeComponent();           
             modsPreviewPics=new ModsPreviewPics(this);            
             //
             /*
@@ -33,12 +32,14 @@ namespace ModsExplorer
         private void Home_Load(object sender, EventArgs e)
         {
             modsPreviewPics.AlterMultPicBox();
+            modsPreviewPics.UpdateMultPicBox(ModsPreviewPics.Operate.LAST);
             this.labelTest.Text = String.Format("{0},{1},\n{2}", this.Width, this.Height, this.AutoScrollPosition.Y);
         }
 
         private void lastPage_Click(object sender, EventArgs e)
         {   //…œ“ª“≥
             modsPreviewPics.UpdateMultPicBox(ModsPreviewPics.Operate.LAST);
+            AutoScrollPosition = new Point(0, 0);
         }
 
         private void nextPage_Click(object sender, EventArgs e)

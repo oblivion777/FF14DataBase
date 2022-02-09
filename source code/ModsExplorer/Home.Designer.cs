@@ -57,6 +57,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.topPictureBox1.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.topPictureBox1.Location = new System.Drawing.Point(0, 0);
+            this.topPictureBox1.Margin = new System.Windows.Forms.Padding(0);
             this.topPictureBox1.Name = "topPictureBox1";
             this.topPictureBox1.Size = new System.Drawing.Size(989, 48);
             this.topPictureBox1.TabIndex = 1;
