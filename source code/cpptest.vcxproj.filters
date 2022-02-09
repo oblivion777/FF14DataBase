@@ -45,4 +45,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="resource\mysql\release\lib64\libcrypto-1_1-x64.dll">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\mysql\release\lib64\libssl-1_1-x64.dll">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resource\mysql\release\lib64\mysqlcppconn-9-vs14.dll">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

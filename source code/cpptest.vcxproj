@@ -75,6 +75,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IntDir>$(Platform)\$(Configuration)\tmp_obj</IntDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -149,6 +152,11 @@
     <ClInclude Include="FileMD5Thread.h" />
     <ClInclude Include="ffdatabase.h" />
     <ClInclude Include="md5.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resource\mysql\release\lib64\libcrypto-1_1-x64.dll" />
+    <None Include="resource\mysql\release\lib64\libssl-1_1-x64.dll" />
+    <None Include="resource\mysql\release\lib64\mysqlcppconn-9-vs14.dll" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
