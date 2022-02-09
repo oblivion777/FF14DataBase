@@ -20,7 +20,6 @@ namespace ModsExplorer
         {
             
         }
-
         public CallMySQL(String conStr)
         {
             conn = new MySqlConnection(conStr);
@@ -91,7 +90,7 @@ namespace ModsExplorer
             return reStr;
         }
 
-        public int setPicsIndex(int mode = 0, int increment = 100)
+        private int setPicsIndex(int mode = 0, int increment = 100)
         {   /*设定从MySQL取回图片路径检索数据的范围,图片路径用于上一页和下一页按钮事件
              * "SELECT filename,path FROM preview_pics LIMIT {0},{1}", setPicsIndex(-1), 100
              */

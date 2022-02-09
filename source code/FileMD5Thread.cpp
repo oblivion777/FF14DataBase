@@ -195,7 +195,7 @@ void FileMD5Thread::initializeFileTypeMap(void)
     for (i = 0; i < sizeof(picsExtensionName) / sizeof(char*); i++) {
         fileTypeMap->insert(pair<string, FileType>(picsExtensionName[i], FileType::PICTURE));
     }
-    pFileTypeMap = fileTypeMap;
+    pFileTypeMap = unique_ptr<map<string, FileType>>(fileTypeMap);
     return;
 }
 
@@ -203,7 +203,7 @@ bool FileMD5Thread::releaseFileTypeMap(void)
 {   /*释放FileTypeMap*/
     try
     {
-        delete pFileTypeMap;
+        //delete pFileTypeMap;
         pFileTypeMap = nullptr;
     }
     catch (...)
@@ -230,7 +230,8 @@ unsigned int FileMD5Thread::timeCount = 0;
 time_t FileMD5Thread::now = 0;
 std::mutex FileMD5Thread::logLock;
 std::mutex FileMD5Thread::timeTagLock;
-map<string, FileMD5Thread::FileType>* FileMD5Thread::pFileTypeMap=nullptr;
+//map<string, FileMD5Thread::FileType>* FileMD5Thread::pFileTypeMap=nullptr;
+unique_ptr<map<string, FileMD5Thread::FileType>> FileMD5Thread::pFileTypeMap = nullptr;
 
 
 FileMD5Thread::FileMD5Thread(char* listFile, char* outMD5File)

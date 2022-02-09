@@ -10,15 +10,6 @@ namespace ModsExplorer
             InitializeComponent();           
             modsPreviewPics=new ModsPreviewPics(this);
             CheckForIllegalCrossThreadCalls = false;
-                       
-            //
-            /*
-            CallMySQL callMySQL=new CallMySQL();
-            callMySQL.SelectPicsPath();
-            MessageBox.Show(callMySQL.GetPicPath());
-            MessageBox.Show(callMySQL.GetPicPath());
-            MessageBox.Show(callMySQL.GetPicPath());
-            */
         }       
 
         private void Home_SizeChanged(object sender, EventArgs e)

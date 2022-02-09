@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <mutex>
 #include <map>
+#include <memory>
 #include "md5.h"
 #include "ffdatabase.h"
 //#include "mysql/jdbc.h"
@@ -34,7 +35,8 @@ public:
 private:/*==========成员函数,对象=========*/
     int fileMD5SumToMySQL(sql::mysql::MySQL_Driver*);
     std::string timeTag(tm*);
-    static map<string, FileType>* pFileTypeMap;
+    //static map<string, FileType>* pFileTypeMap;//使用完后要释放!
+    static unique_ptr<map<string, FileType>> pFileTypeMap;
 public:
     FileMD5Thread(char* in = MODS_LIST_FILE, char* out = OPERATE_MYSQL_LOG_FILE);
     //判断文件类型
