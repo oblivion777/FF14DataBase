@@ -27,8 +27,8 @@ namespace ModsExplorer
             ConnectMySQL();
             //用于执行MySQL查询语句的对象
             selectPicsPath = new MySqlCommand(null, conn);
-            selectPicsPath.CommandText = "SELECT COUNT(mods.filename)" +
-                "FROM mods INNER JOIN preview_pics ON mods.md5 = preview_pics.mod_md5";
+            selectPicsPath.CommandText = "SELECT COUNT(*)" +
+                "FROM mods INNER JOIN preview_pics ON mods.md5 = preview_pics.mod_md5 WHERE mods.type!='body'";
             reader = selectPicsPath.ExecuteReader();
             if (!reader.Read())
             {
@@ -42,7 +42,7 @@ namespace ModsExplorer
         public void SelectLastPicsPath(int mode = -1)
         {
             String sql = String.Format("SELECT mods.filename,mods.path,preview_pics.filename AS 'pic_name',preview_pics.path AS 'pic_path'" +
-                "FROM mods INNER JOIN preview_pics ON mods.md5 = preview_pics.mod_md5 LIMIT {0},{1}",
+                "FROM mods INNER JOIN preview_pics ON mods.md5 = preview_pics.mod_md5 WHERE mods.type!='body' LIMIT {0},{1}",
                 setPicsIndex(mode), ModsPreviewPics.GetPreviewImagesCount());
             selectPicsPath.CommandText = sql;
             reader = selectPicsPath.ExecuteReader();
@@ -51,7 +51,7 @@ namespace ModsExplorer
         public void SelectNextPicsPath()
         {
             String sql = String.Format("SELECT mods.filename,mods.path,preview_pics.filename AS 'pic_name',preview_pics.path AS 'pic_path'" +
-                "FROM mods INNER JOIN preview_pics ON mods.md5 = preview_pics.mod_md5 LIMIT {0},{1}", 
+                "FROM mods INNER JOIN preview_pics ON mods.md5 = preview_pics.mod_md5 WHERE mods.type!='body' LIMIT {0},{1}", 
                 setPicsIndex(1), ModsPreviewPics.GetPreviewImagesCount());
             selectPicsPath.CommandText = sql;
             reader = selectPicsPath.ExecuteReader();
@@ -62,6 +62,10 @@ namespace ModsExplorer
             public string? name = null;
             public string? path = null;
             public string? picPath = null;
+
+            public ModInfo()
+            {
+            }
         }
         public ModInfo GetModInfo()
         {

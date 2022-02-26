@@ -180,12 +180,14 @@ namespace ModsExplorer
         void MultPicBoxesMouseDoubleClick(object sender, MouseEventArgs e)
         {
             PictureBox picBox = (PictureBox)sender;
-            //MessageBox.Show(picBox.Tag.ToString());
+            CallMySQL.ModInfo modInfo = (CallMySQL.ModInfo)picBox.Tag;
+
+            //调用资源管理器
             Process proc = new Process();
             proc.StartInfo.FileName = "explorer";
-            //打开资源管理器
 #pragma warning disable CS8602 // 解引用可能出现空引用。
-            proc.StartInfo.Arguments = "/e,/select," + picBox.Tag.ToString().Replace('/','\\');
+            string modPath = modInfo.path + modInfo.name;
+            proc.StartInfo.Arguments = "/e,/select," + modPath.Replace('/','\\');
 #pragma warning restore CS8602 // 解引用可能出现空引用。
             proc.Start();
         }
@@ -228,7 +230,7 @@ namespace ModsExplorer
             }
             else
             {
-                multPicBoxes.Tag = modInfo.path + modInfo.name;
+                multPicBoxes.Tag = modInfo;
                 modInfo.name = modInfo.name.Substring(0, modInfo.name.LastIndexOf('.'));
                 modsNameLabels.Text = modInfo.name;//更新mod名
             }
