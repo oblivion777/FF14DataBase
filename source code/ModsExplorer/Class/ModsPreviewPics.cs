@@ -12,14 +12,18 @@ namespace ModsExplorer
 
         Home homeWinForn;                       //主窗体对象
         private PictureBox[] multPicBoxes;      //图片框对象数组
-        int picSizeX = 192;                     //单张图片横轴像素
-        int picSizeY = 108;                     //单张图片纵轴像素
-        static int previewImagesCount = 100;    //显示图片总数
+
+        const int PX_RATE = 15;
+        const int picSizeX = 16 * PX_RATE;                     //单张图片横轴像素
+        const int picSizeY = 9 * PX_RATE;                  //单张图片纵轴像素
+        
+        static int imagesTotal = 100;    //显示图片总数
         int picsRow;                            //列
         private Label[] modsNameLabels;         //Label
         internal CallMySQL readerModsInfo = new CallMySQL();
 
-        Thread[] threads = new Thread[previewImagesCount];//线程池   
+        Thread[] threads = new Thread[imagesTotal];//线程数组
+        //Task[] tasks = new Task[imagesTotal];
         public enum Operate
         {
             NONE,LAST,NEXT
@@ -27,8 +31,8 @@ namespace ModsExplorer
         public ModsPreviewPics(Home hObj)
         {
             homeWinForn = hObj;
-            multPicBoxes = new PictureBox[previewImagesCount];
-            modsNameLabels=new Label[previewImagesCount];
+            multPicBoxes = new PictureBox[imagesTotal];
+            modsNameLabels=new Label[imagesTotal];
             calcRow();
             readerModsInfo.SelectLastPicsPath();
 
@@ -38,7 +42,7 @@ namespace ModsExplorer
         //批量生成图片框
         private void CreateMultPicBox()
         {
-            for (int i = 0; i < previewImagesCount; i++)
+            for (int i = 0; i < imagesTotal; i++)
             {
 
                 multPicBoxes[i] = new System.Windows.Forms.PictureBox()
@@ -46,7 +50,7 @@ namespace ModsExplorer
                     //Anchor = AnchorStyles.Left | AnchorStyles.Top,
                     BackgroundImageLayout = ImageLayout.None,
                     BorderStyle = BorderStyle.None,
-                    Location = new Point(picLocationX(i), picLocationY(i)),
+                    Location = new Point(0, 0),
                     Name = ("pictureBoxes" + i.ToString()),
                     Size = new Size(picSizeX, picSizeY),
                     SizeMode = PictureBoxSizeMode.Zoom,
@@ -84,7 +88,7 @@ namespace ModsExplorer
                 default: throw new Exception("别搞事!");
             }
 
-            for (int i = 0; i < previewImagesCount; i++)
+            for (int i = 0; i < multPicBoxes.GetLength(0); i++)
             {   //开启多线程              
                 modInfo = readerModsInfo.GetModInfo();
                 threads[i] = new Thread(
@@ -99,63 +103,84 @@ namespace ModsExplorer
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }
-
-        //用于改变窗体时调整图片框位置
+        
+        /*用于改变窗体时调整图片框位置*/
+        const int INTERVAL_X = 10;//间距
+        //delegate void AlterBox(object state);
         public void AlterMultPicBox()
         {
             calcRow();
-            for (int i = 0; i < multPicBoxes.GetLength(0); i++)
-            {   //调整图片框
-                multPicBoxes[i].Left = picLocationX(i);
-                multPicBoxes[i].Top = picLocationY(i);
-                //调整label
-                modsNameLabels[i].Left = multPicBoxes[i].Location.X;
-                modsNameLabels[i].Top = multPicBoxes[i].Location.Y + picSizeY;
-            }
-        }
+            int picW = Math.Max(homeWinForn.panelPicsBox1.Width / picsRow - INTERVAL_X - 5, picSizeX);
+            int picH = (int)((double)picW / picSizeX * picSizeY);
+            object Lock = new();
+            //ThreadPool.SetMinThreads(120, 120);
+            //ThreadPool.SetMaxThreads(5000, 5000);
 
-        /*图片横坐标*/
-        int picLocationX(int i)
-        {        
-            if (picsRow <= 1)
+            for (int i = 0; i < multPicBoxes.GetLength(0); i++)
             {
-                picsRow = 1;
+                Monitor.Enter(Lock);
+                int index = i;
+                Monitor.Exit(Lock);
+                threads[i] = new Thread(() =>
+                {
+                    //调整图片框
+                    multPicBoxes[index].Left = picLocationX(index, picW);
+                    multPicBoxes[index].Top = picLocationY(index, picH);
+                    multPicBoxes[index].Width = picW;
+                    multPicBoxes[index].Height = picH;
+                    //调整label
+                    modsNameLabels[index].Left = multPicBoxes[index].Location.X;
+                    modsNameLabels[index].Top = multPicBoxes[index].Location.Y + picH;
+                });
+                threads[i].Start();
             }
-            return (picSizeX + 10) * (i % picsRow);
-        }
-        /*图片纵坐标*/
-        const int INTERVAL = 60;     //间距
-        int picLocationY(int i)
-        {
-            if (picsRow <= 1)
-            {
-                picsRow = 1;
-            }
-            /*行数=i÷列数的商(舍去余数)*/
-            return (20 + (i / picsRow) * (picSizeY + INTERVAL)) + homeWinForn.panelPicsBox1.AutoScrollPosition.Y;
+            for (int i = 0; i < multPicBoxes.GetLength(0); i++)threads[i].Join();
+            //Task.WaitAll();          
         }
         //计算列数
         int calcRow()
         {
-            picsRow = (homeWinForn.panelPicsBox1.Width - 30) / picSizeX;//列
+            picsRow = (homeWinForn.panelPicsBox1.Width - 40) / picSizeX;//列
+            picsRow = Math.Max(picsRow, 1);
             return picsRow;
+        }
+        /*图片横坐标*/
+        int picLocationX(int i, int picW = picSizeX)
+        {
+            /*
+            if (picsRow <= 1)
+            {
+                picsRow = 1;
+            }*/
+            return (picW + INTERVAL_X) * (i % picsRow);
+        }
+        /*图片纵坐标*/
+        const int INTERVAL_Y = 60;     //间距
+        int picLocationY(int i, int picH = picSizeY)
+        {/*
+            if (picsRow <= 1)
+            {
+                picsRow = 1;
+            }*/
+            /*行数=i÷列数的商(舍去余数)*/
+            return (20 + (i / picsRow) * (picH + INTERVAL_Y)) + homeWinForn.panelPicsBox1.AutoScrollPosition.Y;
         }
 
         public static int GetPreviewImagesCount()
         {
-            return previewImagesCount;
+            return imagesTotal;
         }
 
         /*=====================================================================*/
         void CreateModsNameLabels()
         {
-            for (int i = 0; i < previewImagesCount; i++)
+            for (int i = 0; i < imagesTotal; i++)
             {
                 modsNameLabels[i] = new Label()
                 {
                     Location = new System.Drawing.Point(0, 0),
                     Name = ("modsNameLabel" + i.ToString()),
-                    Size = new System.Drawing.Size(picSizeX, INTERVAL),
+                    Size = new System.Drawing.Size(picSizeX, INTERVAL_Y),
                     TabIndex = 0,
                     TabStop = false,
                     TextAlign = System.Drawing.ContentAlignment.TopCenter,

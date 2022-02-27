@@ -16,7 +16,7 @@ int FileMD5Thread::fileMD5SumToMySQL(sql::mysql::MySQL_Driver* driver)
     //char* buff = new char[FILE_NAME_PATH_SIZE*2];
     MYSQL_CHAR buff[FILE_NAME_PATH_SIZE * 2] = { 0 };
     wstring wstrFullFilePath;
-    string pathWithFileMD5;//文件路径与文件MD5值再次求MD5用于唯一索引
+    string pathMD5;//文件路径与文件MD5值再次求MD5用于唯一索引
     MYSQL_CHAR buffMD5[128] = { 0 };
     MYSQL_CHAR fileName[FILE_NAME_PATH_SIZE] = { 0 };
     MYSQL_CHAR filePath[FILE_NAME_PATH_SIZE] = { 0 };
@@ -41,8 +41,8 @@ int FileMD5Thread::fileMD5SumToMySQL(sql::mysql::MySQL_Driver* driver)
         }
 
         StrConvertor::cutStr(buff, filePath, fileName, '\\');
-        pathWithFileMD5.assign(filePath).append(buffMD5);
-        pathWithFileMD5.assign(md5::digestString(pathWithFileMD5.c_str()));
+        pathMD5.assign(buff);
+        pathMD5.assign(md5::digestString(pathMD5));
 
         /*写入数据库*/
         try
@@ -51,8 +51,8 @@ int FileMD5Thread::fileMD5SumToMySQL(sql::mysql::MySQL_Driver* driver)
             switch (bpFileType(fileName))//判断文件类型
             {
             case FileMD5Thread::FileType::MOD: {
-                sprintf(buff, "INSERT INTO mods(id,filename,path,md5,path_with_file_md5) VALUE(\"%s\",\"%s\",\"%s\",\"%s\",\"%s\")", \
-                    timeTag(ltm).c_str(), fileName, filePath, buffMD5, pathWithFileMD5.c_str());
+                sprintf(buff, "INSERT INTO mods(id,filename,path,md5,path_md5) VALUE(\"%s\",\"%s\",\"%s\",\"%s\",\"%s\")", \
+                    timeTag(ltm).c_str(), fileName, filePath, buffMD5, pathMD5.c_str());
                 cout << state->executeUpdate(buff);
                 break;
             }
