@@ -24,10 +24,6 @@
 # 磨坊Mod数据库项目预览
 [拉磨项目预览](https://github.com/oblivion777/FF14ModsDataBase/wiki)
 
-**本项目采用 MIT 开源许可证（MIT License）授权发布。该协议允许用户在保留原始版权和许可声明的前提下，复制、修改、合并、发布、分发本软件及其副本，亦可将其用于商业用途，且无须公开源代码。**
-
-**This project is licensed under the MIT License. You are free to use, modify, and distribute it with proper attribution.**
-
 # 项目所用语言标准与平台说明
 本项目采用现代化开发工具与语言标准，以提升代码的可维护性、性能表现与跨平台适配能力。
 
