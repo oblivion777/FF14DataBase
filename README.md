@@ -22,7 +22,7 @@
 ```
 
 # 磨坊Mod数据库项目预览
-[拉磨项目预览](https://commlist.remin.cc/)
+[拉磨项目预览](https://github.com/oblivion777/FF14ModsDataBase/wiki)
 
 **本项目采用 MIT 开源许可证（MIT License）授权发布。该协议允许用户在保留原始版权和许可声明的前提下，复制、修改、合并、发布、分发本软件及其副本，亦可将其用于商业用途，且无须公开源代码。**
 
